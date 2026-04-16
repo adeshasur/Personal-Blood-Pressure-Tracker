@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// On Vercel, the API and Frontend share the same domain
+// On Netlify/Vercel, the API and Frontend share the same domain
 // So we can use a relative path
 const API_BASE_URL = '/api';
 

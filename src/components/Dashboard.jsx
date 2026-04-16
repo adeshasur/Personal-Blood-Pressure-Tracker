@@ -43,14 +43,20 @@ export const Dashboard = () => {
   const eveningReading = latest.find(r => r.category === 'Evening');
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-12 animate-fade-in">
       {/* Today's Stats */}
       <div>
-        <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-          <Calendar className="w-6 h-6" />
-          Today's Summary
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="mb-6">
+          <h2 className="text-3xl font-black text-white tracking-tight flex items-center gap-3">
+            <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400">
+              <Calendar className="w-6 h-6" />
+            </div>
+            Today's Metrics
+          </h2>
+          <p className="text-slate-500 text-sm mt-1 ml-11">Overview of your vitals for today</p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <StatBox
             label="Avg Systolic"
             value={avgSystolic}
@@ -77,58 +83,60 @@ export const Dashboard = () => {
 
       {/* Daily Schedule Status */}
       <div>
-        <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-          <Zap className="w-6 h-6" />
-          Today's Log Status
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Morning */}
-          <div className="card-glass">
-            <p className="text-sm text-gray-400 mb-2">Morning (8:30 AM)</p>
-            {morningReading ? (
-              <div>
-                <p className="text-2xl font-bold">{morningReading.systolic}/{morningReading.diastolic}</p>
-                <p className="text-xs text-gray-400 mt-1">✓ Logged</p>
-              </div>
-            ) : (
-              <div className="text-gray-500">
-                <p className="text-2xl font-bold opacity-50">--/--</p>
-                <p className="text-xs text-gray-500 mt-1">Pending</p>
-              </div>
-            )}
-          </div>
+        <div className="mb-6">
+          <h2 className="text-3xl font-black text-white tracking-tight flex items-center gap-3">
+            <div className="p-2 rounded-xl bg-rose-500/10 text-rose-400">
+              <Zap className="w-6 h-6" />
+            </div>
+            Logging Progress
+          </h2>
+          <p className="text-slate-500 text-sm mt-1 ml-11">Track your daily measurement schedule</p>
+        </div>
 
-          {/* Afternoon */}
-          <div className="card-glass">
-            <p className="text-sm text-gray-400 mb-2">Afternoon (2:00 PM)</p>
-            {afternoonReading ? (
-              <div>
-                <p className="text-2xl font-bold">{afternoonReading.systolic}/{afternoonReading.diastolic}</p>
-                <p className="text-xs text-gray-400 mt-1">✓ Logged</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[
+            { label: 'Morning', time: '8:30 AM', reading: morningReading },
+            { label: 'Afternoon', time: '2:00 PM', reading: afternoonReading },
+            { label: 'Evening', time: '8:30 PM', reading: eveningReading }
+          ].map((item) => (
+            <div key={item.label} className="glass-card group">
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <p className="text-xs font-bold text-slate-500 uppercase tracking-widest leading-none mb-1">{item.label}</p>
+                  <p className="text-[10px] text-slate-600 font-medium uppercase tracking-tighter">{item.time}</p>
+                </div>
+                {item.reading ? (
+                  <div className="p-1 px-2 rounded-lg bg-emerald-500/10 text-emerald-500 text-[10px] font-black uppercase tracking-widest border border-emerald-500/20">
+                    Logged
+                  </div>
+                ) : (
+                  <div className="p-1 px-2 rounded-lg bg-white/5 text-slate-600 text-[10px] font-black uppercase tracking-widest border border-white/5">
+                    Pending
+                  </div>
+                )}
               </div>
-            ) : (
-              <div className="text-gray-500">
-                <p className="text-2xl font-bold opacity-50">--/--</p>
-                <p className="text-xs text-gray-500 mt-1">Pending</p>
-              </div>
-            )}
-          </div>
 
-          {/* Evening */}
-          <div className="card-glass">
-            <p className="text-sm text-gray-400 mb-2">Evening (8:30 PM)</p>
-            {eveningReading ? (
-              <div>
-                <p className="text-2xl font-bold">{eveningReading.systolic}/{eveningReading.diastolic}</p>
-                <p className="text-xs text-gray-400 mt-1">✓ Logged</p>
-              </div>
-            ) : (
-              <div className="text-gray-500">
-                <p className="text-2xl font-bold opacity-50">--/--</p>
-                <p className="text-xs text-gray-500 mt-1">Pending</p>
-              </div>
-            )}
-          </div>
+              {item.reading ? (
+                <div className="animate-fade-in">
+                  <div className="flex items-baseline gap-1">
+                    <p className="text-3xl font-black text-white tracking-tighter">
+                      {item.reading.systolic}/{item.reading.diastolic}
+                    </p>
+                    <p className="text-xs font-bold text-slate-500 uppercase">mmHg</p>
+                  </div>
+                  <div className="flex items-center gap-1.5 mt-2">
+                    <Heart className="w-3 h-3 text-rose-500 fill-current" />
+                    <p className="text-sm font-bold text-slate-300">{item.reading.pulse} <span className="text-[10px] text-slate-500 uppercase">BPM</span></p>
+                  </div>
+                </div>
+              ) : (
+                <div className="py-4 flex flex-col items-center justify-center border-2 border-dashed border-white/5 rounded-2xl group-hover:border-indigo-500/20 transition-colors">
+                  <p className="text-4xl font-black text-slate-800 tracking-tighter">--/--</p>
+                  <p className="text-[10px] font-bold text-slate-700 uppercase mt-1 tracking-widest">No Data</p>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       </div>
     </div>

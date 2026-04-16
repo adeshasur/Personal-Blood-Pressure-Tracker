@@ -8,6 +8,7 @@ export const LogForm = ({ category, onSuccess }) => {
     systolic: '',
     diastolic: '',
     pulse: '',
+    date: new Date().toISOString().split('T')[0], // Default to today
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
@@ -16,7 +17,7 @@ export const LogForm = ({ category, onSuccess }) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value ? parseInt(value) : ''
+      [name]: name === 'date' ? value : (value ? parseInt(value) : '')
     }));
   };
 
@@ -34,11 +35,17 @@ export const LogForm = ({ category, onSuccess }) => {
         systolic: formData.systolic,
         diastolic: formData.diastolic,
         pulse: formData.pulse,
+        date: formData.date,
         category,
       });
 
       setMessage({ type: 'success', text: 'Reading recorded successfully!' });
-      setFormData({ systolic: '', diastolic: '', pulse: '' });
+      setFormData(prev => ({ 
+        systolic: '', 
+        diastolic: '', 
+        pulse: '',
+        date: prev.date // Keep the selected date for potentially multiple entries
+      }));
       
       setTimeout(() => {
         setMessage({ type: '', text: '' });
@@ -61,70 +68,78 @@ export const LogForm = ({ category, onSuccess }) => {
   };
 
   return (
-    <div className="card-glass max-w-md mx-auto">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold">{category} Reading</h2>
-        <p className="text-gray-400 text-sm mt-1">~{categoryTime[category]}</p>
+    <div className="glass-card max-w-md mx-auto animate-fade-in">
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400">
+            <Heart className="w-6 h-6" />
+          </div>
+          <h2 className="text-2xl font-black text-white tracking-tight">{category} Reading</h2>
+        </div>
+        <p className="text-slate-500 text-xs font-bold uppercase tracking-widest ml-11">Suggested Time: {categoryTime[category]}</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label className="block text-sm font-medium mb-2">Systolic (Top)</label>
+          <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Measurement Date</label>
           <input
-            type="number"
-            name="systolic"
-            value={formData.systolic}
+            type="date"
+            name="date"
+            value={formData.date}
             onChange={handleChange}
-            placeholder="120"
-            min="0"
-            max="300"
             className="input-field"
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium mb-2">Diastolic (Bottom)</label>
-          <input
-            type="number"
-            name="diastolic"
-            value={formData.diastolic}
-            onChange={handleChange}
-            placeholder="80"
-            min="0"
-            max="300"
-            className="input-field"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-2">Pulse (BPM)</label>
-          <div className="flex items-center gap-2">
-            <Heart className="w-5 h-5 text-pink-400" />
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Systolic</label>
             <input
               type="number"
-              name="pulse"
-              value={formData.pulse}
+              name="systolic"
+              value={formData.systolic}
               onChange={handleChange}
-              placeholder="72"
-              min="0"
-              max="200"
-              className="input-field flex-1"
+              placeholder="120"
+              className="input-field"
+            />
+          </div>
+          <div>
+            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Diastolic</label>
+            <input
+              type="number"
+              name="diastolic"
+              value={formData.diastolic}
+              onChange={handleChange}
+              placeholder="80"
+              className="input-field"
             />
           </div>
         </div>
 
+        <div>
+          <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Pulse (BPM)</label>
+          <input
+            type="number"
+            name="pulse"
+            value={formData.pulse}
+            onChange={handleChange}
+            placeholder="72"
+            className="input-field"
+          />
+        </div>
+
         {message.text && (
-          <div className={`p-3 rounded-lg text-sm ${
+          <div className={`p-4 rounded-2xl text-xs font-bold uppercase tracking-widest animate-fade-in ${
             message.type === 'success' 
-              ? 'bg-green-500/20 border border-green-500/30 text-green-300' 
-              : 'bg-red-500/20 border border-red-500/30 text-red-300'
+              ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400' 
+              : 'bg-rose-500/10 border border-rose-500/20 text-rose-400'
           }`}>
             {message.text}
           </div>
         )}
 
         {formData.systolic && formData.diastolic && (
-          <div className="pt-2 pb-4">
+          <div className="pt-2">
             <StatusIndicator systolic={formData.systolic} diastolic={formData.diastolic} />
           </div>
         )}
@@ -132,9 +147,9 @@ export const LogForm = ({ category, onSuccess }) => {
         <button
           type="submit"
           disabled={loading}
-          className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+          className="btn-primary w-full mt-4 !py-4"
         >
-          {loading ? 'Recording...' : 'Record Reading'}
+          {loading ? 'Recording...' : 'Save Reading'}
         </button>
       </form>
     </div>

@@ -14,31 +14,41 @@ export const LogPage = () => {
   };
 
   return (
-    <div className="min-h-screen pt-8 pb-12">
-      <div className="max-w-6xl mx-auto px-4">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2 flex items-center gap-3">
-            <Clock className="w-8 h-8 text-blue-400" />
-            Log Reading
-          </h1>
-          <p className="text-gray-400">Record your blood pressure and pulse</p>
-        </div>
+    <div className="pt-8 pb-24">
+      <div className="max-w-6xl mx-auto px-6">
+        <header className="mb-12 animate-fade-in">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="p-3 rounded-2xl bg-indigo-500/10 text-indigo-400">
+              <Clock className="w-8 h-8" />
+            </div>
+            <div>
+              <h1 className="text-4xl font-black text-white tracking-tight">Record Daily Vitals</h1>
+              <p className="text-slate-500 text-sm font-medium mt-1">Keep your health data accurate and up-to-date</p>
+            </div>
+          </div>
+        </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           {/* Form Section */}
-          <div className="lg:col-span-1">
-            <div className="space-y-3 mb-6">
+          <div className="lg:col-span-4 space-y-8 animate-fade-in">
+            <div className="space-y-3">
+              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 mb-4">Selection Category</p>
               {categories.map(category => (
                 <button
                   key={category}
                   onClick={() => setActiveCategory(category)}
-                  className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-200 ${
+                  className={`w-full text-left px-5 py-4 rounded-2xl transition-all duration-300 group ${
                     activeCategory === category
-                      ? 'glass border-blue-500/50 border'
-                      : 'glass hover:border-gray-600/50 border border-gray-700/30'
+                      ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20'
+                      : 'glass-card text-slate-400 hover:text-white hover:bg-white/5 border-white/5'
                   }`}
                 >
-                  {category}
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold tracking-tight">{category}</span>
+                    {activeCategory === category && (
+                      <div className="w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_8px_white]" />
+                    )}
+                  </div>
                 </button>
               ))}
             </div>
@@ -46,8 +56,7 @@ export const LogPage = () => {
           </div>
 
           {/* History Section */}
-          <div className="lg:col-span-2">
-            <h2 className="text-2xl font-bold mb-4">Recent Readings</h2>
+          <div className="lg:col-span-8 animate-fade-in [animation-delay:200ms]">
             <HistoryList refreshTrigger={refreshTrigger} />
           </div>
         </div>

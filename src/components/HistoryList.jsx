@@ -47,35 +47,38 @@ export const HistoryList = ({ refreshTrigger }) => {
   }
 
   return (
-    <div>
+    <div className="space-y-6">
       {readings.length === 0 ? (
-        <div className="card-glass text-center py-12">
-          <p className="text-gray-400">No readings recorded yet</p>
+        <div className="glass-card text-center py-16 border-dashed border-white/5">
+          <p className="text-slate-500 font-bold uppercase tracking-widest text-sm">No records found</p>
+          <p className="text-slate-600 text-[10px] mt-2 font-medium uppercase tracking-tighter">Your recent measurements will appear here</p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in">
           {readings.map(reading => (
             <div key={reading.id} className="group relative">
               <ReadingCard reading={reading} />
-              <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
                 <button
                   onClick={() => handleDelete(reading.id)}
-                  className="p-2 rounded-lg bg-red-500/20 hover:bg-red-500/40 text-red-400 transition-colors"
-                  title="Delete"
+                  className="p-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 border border-rose-500/20 transition-colors"
+                  title="Delete Record"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="w-4 h-4 shadow-sm" />
                 </button>
               </div>
             </div>
           ))}
           
-          {readings.length === limit && (
-            <button
-              onClick={handleLoadMore}
-              className="btn-secondary w-full"
-            >
-              Load More
-            </button>
+          {readings.length >= limit && (
+            <div className="col-span-full pt-4">
+              <button
+                onClick={handleLoadMore}
+                className="btn-secondary w-full !py-4"
+              >
+                Load More History
+              </button>
+            </div>
           )}
         </div>
       )}
