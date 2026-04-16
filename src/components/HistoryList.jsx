@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Trash2, Edit2 } from 'lucide-react';
-import { pressureService } from '../services/api';
-import { ReadingCard } from './Common';
+import { pressureService } from '../services/api.js';
+import { ReadingCard } from './Common.jsx';
 
 export const HistoryList = ({ refreshTrigger }) => {
   const [readings, setReadings] = useState([]);

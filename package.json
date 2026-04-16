@@ -1,7 +1,6 @@
 {
   "name": "personal-blood-pressure-tracker",
   "version": "1.0.0",
-  "type": "module",
   "private": true,
   "dependencies": {
     "@vercel/postgres": "^0.10.0",

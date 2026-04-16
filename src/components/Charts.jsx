@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { TrendingUp, Calendar } from 'lucide-react';
-import { pressureService } from '../services/api';
+import { pressureService } from '../services/api.js';
 
 export const Charts = () => {
   const [stats, setStats] = useState([]);

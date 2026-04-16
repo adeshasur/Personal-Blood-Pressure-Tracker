@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Heart, Zap, TrendingUp, Calendar } from 'lucide-react';
-import { pressureService } from '../services/api';
-import { StatBox } from './Common';
+import { pressureService } from '../services/api.js';
+import { StatBox } from './Common.jsx';
 
 export const Dashboard = () => {
   const [stats, setStats] = useState([]);

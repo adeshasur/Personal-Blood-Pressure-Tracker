@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { HomePage } from './pages/HomePage';
-import { LogPage } from './pages/LogPage';
+import { HomePage } from './pages/HomePage.jsx';
+import { LogPage } from './pages/LogPage.jsx';
 import { Heart, BarChart3 } from 'lucide-react';
 import './index.css';
 

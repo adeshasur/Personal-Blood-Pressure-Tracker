@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Heart } from 'lucide-react';
-import { pressureService } from '../services/api';
+import { pressureService } from '../services/api.js';
 import { StatusIndicator } from './Common';
 
 export const LogForm = ({ category, onSuccess }) => {
