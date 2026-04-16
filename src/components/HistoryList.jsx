@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Trash2, Edit2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import { pressureService } from '../services/api.js';
 import { ReadingCard } from './Common.jsx';
 

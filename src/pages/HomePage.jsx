@@ -1,6 +1,6 @@
 import { Dashboard } from '../components/Dashboard.jsx';
 import { Charts } from '../components/Charts.jsx';
-import { BarChart3, TrendingUp } from 'lucide-react';
+import { BarChart3 } from 'lucide-react';
 
 export const HomePage = () => {
   return (

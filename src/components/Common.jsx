@@ -1,4 +1,4 @@
-import { Heart, TrendingUp, TrendingDown } from 'lucide-react';
+import { Heart } from 'lucide-react';
 
 export const StatusIndicator = ({ systolic, diastolic }) => {
   const getStatus = () => {
