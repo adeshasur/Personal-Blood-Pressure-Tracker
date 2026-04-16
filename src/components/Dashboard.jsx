@@ -32,10 +32,11 @@ export const Dashboard = () => {
     return <div className="text-center py-12">Loading dashboard...</div>;
   }
 
-  const todayData = stats[0] || {};
-  const avgSystolic = todayData.avg_systolic || 0;
-  const avgDiastolic = todayData.avg_diastolic || 0;
-  const avgPulse = todayData.avg_pulse || 0;
+  const today = new Date().toISOString().split('T')[0];
+  const todayData = stats.find(s => s.date === today) || {};
+  const avgSystolic = Math.round(todayData.avg_systolic || 0);
+  const avgDiastolic = Math.round(todayData.avg_diastolic || 0);
+  const avgPulse = Math.round(todayData.avg_pulse || 0);
 
   const morningReading = latest.find(r => r.category === 'Morning');
   const afternoonReading = latest.find(r => r.category === 'Afternoon');
