@@ -113,6 +113,38 @@ app.get('/api/pressure/date/:date', async (req, res) => {
   }
 });
 
+// GET /api/seed - Temporary endpoint to seed historical data
+app.get('/api/seed', async (req, res) => {
+  try {
+    const historicalData = [
+      { date: '2026-04-13', systolic: 116, diastolic: 90, pulse: 72, category: 'Morning' },
+      { date: '2026-04-13', systolic: 118, diastolic: 70, pulse: 72, category: 'Afternoon' },
+      { date: '2026-04-13', systolic: 119, diastolic: 75, pulse: 72, category: 'Evening' },
+      { date: '2026-04-14', systolic: 120, diastolic: 78, pulse: 72, category: 'Morning' },
+      { date: '2026-04-14', systolic: 114, diastolic: 66, pulse: 72, category: 'Afternoon' },
+      { date: '2026-04-14', systolic: 121, diastolic: 79, pulse: 72, category: 'Evening' },
+      { date: '2026-04-15', systolic: 120, diastolic: 82, pulse: 72, category: 'Morning' },
+      { date: '2026-04-15', systolic: 119, diastolic: 72, pulse: 72, category: 'Afternoon' },
+      { date: '2026-04-15', systolic: 113, diastolic: 54, pulse: 72, category: 'Evening' },
+      { date: '2026-04-16', systolic: 131, diastolic: 73, pulse: 72, category: 'Morning' },
+      { date: '2026-04-16', systolic: 129, diastolic: 78, pulse: 72, category: 'Afternoon' },
+      { date: '2026-04-16', systolic: 135, diastolic: 112, pulse: 72, category: 'Evening' }
+    ];
+
+    for (const record of historicalData) {
+      await sql`
+        INSERT INTO pressure_readings (systolic, diastolic, pulse, category, date, notes)
+        VALUES (${record.systolic}, ${record.diastolic}, ${record.pulse}, ${record.category}, ${record.date}, 'Historical Data Seeded')
+      `;
+    }
+
+    res.json({ message: 'Historical data seeded successfully!', count: historicalData.length });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to seed data', details: error.message });
+  }
+});
+
 // DELETE /api/pressure/:id
 app.delete('/api/pressure/:id', async (req, res) => {
   try {
