@@ -4,36 +4,34 @@ import { BarChart3 } from 'lucide-react';
 
 export const HomePage = () => {
   return (
-    <div className="pt-12 pb-24">
-      <div className="max-w-6xl mx-auto px-6">
-        <header className="mb-16 animate-fade-in">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[10px] font-black uppercase tracking-[0.2em] mb-4">
-            Health Intelligence
+    <div className="pt-24 pb-32">
+      <div className="max-w-7xl mx-auto px-8">
+        <header className="mb-32 animate-modern-fade">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 border border-white/10 text-slate-500 text-[9px] font-black uppercase tracking-[0.4em] mb-8">
+            Diagnostic Monitor
           </div>
-          <h1 className="text-6xl font-black text-white tracking-tighter mb-4">
-            Blood Pressure <br/>
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-indigo-500 to-rose-400">
-              Insight Engine.
-            </span>
+          <h1 className="text-8xl font-black text-white tracking-tighter mb-8 leading-[0.9]">
+            HEART <br/>
+            LEDR SYSTEM.
           </h1>
-          <p className="text-slate-500 text-lg font-medium max-w-xl leading-relaxed">
-            Monitor, analyze, and optimize your cardiovascular health with a precision-engineered tracking experience.
+          <p className="text-slate-600 text-lg font-bold max-w-xl leading-relaxed uppercase tracking-tight">
+            High-precision cardiovascular data monitoring and historical analysis engine.
           </p>
         </header>
 
         <Dashboard />
 
-        <section className="mt-24 pt-12 border-t border-white/5 animate-fade-in">
-          <div className="mb-8">
-            <h2 className="text-3xl font-black text-white tracking-tight flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-400">
-                <BarChart3 className="w-6 h-6" />
+        <section className="mt-32 pt-24 border-t border-white/5 animate-modern-fade">
+          <div className="mb-12">
+            <div className="flex items-center gap-4 mb-3">
+              <div className="p-2 border border-white/20 text-white">
+                <BarChart3 className="w-5 h-5" />
               </div>
-              30-Day Trends
-            </h2>
-            <p className="text-slate-500 text-sm mt-1 ml-11">Visual analytics of your progress over time</p>
+              <h2 className="text-4xl font-black text-white tracking-tighter uppercase">Trend Analysis</h2>
+            </div>
+            <p className="text-slate-600 text-[10px] uppercase font-black tracking-[0.2em] ml-14">Aggregate data visualization (30-day index)</p>
           </div>
-          <div className="glass-card !p-8">
+          <div className="modern-card !p-12">
             <Charts />
           </div>
         </section>

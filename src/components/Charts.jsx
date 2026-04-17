@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { TrendingUp, Calendar } from 'lucide-react';
+import { TrendingUp, Activity, Calendar } from 'lucide-react';
 import { pressureService } from '../services/api.js';
 
 export const Charts = () => {
@@ -15,7 +15,7 @@ export const Charts = () => {
     try {
       const response = await pressureService.getDashboardStats();
       setStats(response.data.map(stat => ({
-        date: new Date(stat.date).toLocaleDateString(),
+        date: new Date(stat.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
         systolic: Math.round(stat.avg_systolic),
         diastolic: Math.round(stat.avg_diastolic),
         pulse: Math.round(stat.avg_pulse),
@@ -29,80 +29,94 @@ export const Charts = () => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-24 space-y-4">
-        <div className="w-12 h-12 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin" />
-        <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">Analyzing Trends...</p>
+      <div className="flex flex-col items-center justify-center py-32 space-y-6">
+        <div className="w-8 h-8 border-2 border-white/10 border-t-white animate-spin" />
+        <p className="text-slate-600 font-black uppercase tracking-[0.4em] text-[10px]">Processing Trends</p>
       </div>
     );
   }
 
   if (stats.length === 0) {
     return (
-      <div className="glass-card text-center py-16 border-dashed border-white/5">
-        <Calendar className="w-10 h-10 mx-auto mb-4 text-slate-700" />
-        <p className="text-slate-500 font-bold uppercase tracking-widest text-sm">Insufficient Analytics Data</p>
-        <p className="text-slate-600 text-[10px] mt-2 font-medium uppercase tracking-tighter">Record more measurements to see trends</p>
+      <div className="modern-card text-center py-24 border-dashed">
+        <Calendar className="w-12 h-12 mx-auto mb-6 text-slate-800" />
+        <p className="text-slate-500 font-black uppercase tracking-[0.2em] text-sm">No Statistical Presence</p>
+        <p className="text-slate-700 text-[9px] mt-3 font-bold uppercase tracking-widest">Aggregate data requires multiple entries</p>
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div className="grid grid-cols-1 xl:grid-cols-2 gap-12">
       {/* Blood Pressure Trend */}
-      <div className="space-y-4">
-        <div className="flex items-center gap-2 px-2">
-          <TrendingUp className="w-4 h-4 text-indigo-400" />
-          <h3 className="text-sm font-black text-slate-300 uppercase tracking-widest">Pressure Over Time</h3>
+      <div className="space-y-6">
+        <div className="flex items-center gap-4 px-2">
+          <TrendingUp className="w-5 h-5 text-white" />
+          <h3 className="text-sm font-black text-white uppercase tracking-[0.2em]">Pressure Analytics</h3>
         </div>
-        <div className="glass-card !p-4 !bg-slate-950/20 backdrop-blur-3xl border-indigo-500/10">
-          <ResponsiveContainer width="100%" height={350}>
+        <div className="modern-card !p-8 bg-black/40">
+          <ResponsiveContainer width="100%" height={400}>
             <LineChart data={stats}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+              <CartesianGrid strokeDasharray="0" stroke="#1A1A1A" vertical={false} />
               <XAxis 
                 dataKey="date" 
-                stroke="#475569" 
-                fontSize={10} 
-                fontWeight={700}
+                stroke="#333" 
+                fontSize={9} 
+                fontWeight={900}
                 tickLine={false}
                 axisLine={false}
-                dy={10}
+                dy={15}
               />
               <YAxis 
-                stroke="#475569" 
-                fontSize={10} 
-                fontWeight={700}
+                stroke="#333" 
+                fontSize={9} 
+                fontWeight={900}
                 tickLine={false}
                 axisLine={false}
-                dx={-10}
+                dx={-15}
               />
               <Tooltip 
                 contentStyle={{ 
-                  backgroundColor: '#0f172a', 
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: '16px',
-                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.5)',
-                  fontSize: '12px',
-                  fontWeight: 'bold'
+                  backgroundColor: '#FFF', 
+                  border: 'none',
+                  borderRadius: '0',
+                  boxShadow: '20px 20px 60px rgba(0,0,0,0.5)',
+                  fontSize: '10px',
+                  fontWeight: '900',
+                  color: '#000',
+                  textTransform: 'uppercase'
                 }}
-                itemStyle={{ padding: '2px 0' }}
+                itemStyle={{ color: '#000', padding: '4px 0' }}
+                cursor={{ stroke: '#FFF', strokeWidth: 1 }}
               />
-              <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px' }} />
+              <Legend 
+                verticalAlign="top" 
+                height={48} 
+                iconType="square" 
+                wrapperStyle={{ 
+                  fontSize: '9px', 
+                  fontWeight: '900', 
+                  textTransform: 'uppercase', 
+                  letterSpacing: '2px',
+                  paddingBottom: '20px'
+                }} 
+              />
               <Line 
-                type="monotone" 
+                type="stepAfter" 
                 dataKey="systolic" 
-                stroke="#6366f1" 
-                strokeWidth={4} 
-                dot={{ fill: '#6366f1', strokeWidth: 2, r: 4, stroke: '#0f172a' }}
-                activeDot={{ r: 6, strokeWidth: 0 }}
+                stroke="#FFFFFF" 
+                strokeWidth={3} 
+                dot={false}
+                activeDot={{ r: 4, strokeWidth: 0, fill: '#FFFFFF' }}
                 name="Systolic" 
               />
               <Line 
-                type="monotone" 
+                type="stepAfter" 
                 dataKey="diastolic" 
-                stroke="#10b981" 
-                strokeWidth={4} 
-                dot={{ fill: '#10b981', strokeWidth: 2, r: 4, stroke: '#0f172a' }}
-                activeDot={{ r: 6, strokeWidth: 0 }}
+                stroke="#404040" 
+                strokeWidth={3} 
+                dot={false}
+                activeDot={{ r: 4, strokeWidth: 0, fill: '#404040' }}
                 name="Diastolic" 
               />
             </LineChart>
@@ -111,55 +125,52 @@ export const Charts = () => {
       </div>
 
       {/* Pulse Trend */}
-      <div className="space-y-4">
-        <div className="flex items-center gap-2 px-2">
-          <Heart className="w-4 h-4 text-rose-400" />
-          <h3 className="text-sm font-black text-slate-300 uppercase tracking-widest">Heart Rate Trend</h3>
+      <div className="space-y-6">
+        <div className="flex items-center gap-4 px-2">
+          <Activity className="w-5 h-5 text-white" />
+          <h3 className="text-sm font-black text-white uppercase tracking-[0.2em]">Frequency Trend</h3>
         </div>
-        <div className="glass-card !p-4 !bg-slate-950/20 backdrop-blur-3xl border-rose-500/10">
-          <ResponsiveContainer width="100%" height={350}>
+        <div className="modern-card !p-8 bg-black/40">
+          <ResponsiveContainer width="100%" height={400}>
             <BarChart data={stats}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+              <CartesianGrid strokeDasharray="0" stroke="#1A1A1A" vertical={false} />
               <XAxis 
                 dataKey="date" 
-                stroke="#475569" 
-                fontSize={10} 
-                fontWeight={700}
+                stroke="#333" 
+                fontSize={9} 
+                fontWeight={900}
                 tickLine={false}
                 axisLine={false}
-                dy={10}
+                dy={15}
               />
               <YAxis 
-                stroke="#475569" 
-                fontSize={10} 
-                fontWeight={700}
+                stroke="#333" 
+                fontSize={9} 
+                fontWeight={900}
                 tickLine={false}
                 axisLine={false}
-                dx={-10}
+                dx={-15}
               />
               <Tooltip 
                 cursor={{ fill: 'rgba(255,255,255,0.05)' }}
                 contentStyle={{ 
-                  backgroundColor: '#0f172a', 
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: '16px',
-                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.5)',
-                  fontSize: '12px',
-                  fontWeight: 'bold'
+                  backgroundColor: '#FFF', 
+                  border: 'none',
+                  borderRadius: '0',
+                  boxShadow: '20px 20px 60px rgba(0,0,0,0.5)',
+                  fontSize: '10px',
+                  fontWeight: '900',
+                  color: '#000',
+                  textTransform: 'uppercase'
                 }}
               />
               <Bar 
                 dataKey="pulse" 
-                fill="url(#pulseGradient)" 
-                radius={[6, 6, 0, 0]} 
+                fill="#FFFFFF" 
+                radius={[0, 0, 0, 0]} 
                 name="Pulse (BPM)"
+                barSize={20}
               />
-              <defs>
-                <linearGradient id="pulseGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#f43f5e" stopOpacity={0.8}/>
-                  <stop offset="100%" stopColor="#f43f5e" stopOpacity={0.1}/>
-                </linearGradient>
-              </defs>
             </BarChart>
           </ResponsiveContainer>
         </div>

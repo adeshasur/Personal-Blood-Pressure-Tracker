@@ -25,7 +25,7 @@ export const LogForm = ({ category, onSuccess }) => {
     e.preventDefault();
     
     if (!formData.systolic || !formData.diastolic || !formData.pulse) {
-      setMessage({ type: 'error', text: 'Please fill in all fields' });
+      setMessage({ type: 'error', text: 'Incomplete data. Please check fields.' });
       return;
     }
 
@@ -39,12 +39,12 @@ export const LogForm = ({ category, onSuccess }) => {
         category,
       });
 
-      setMessage({ type: 'success', text: 'Reading recorded successfully!' });
+      setMessage({ type: 'success', text: 'Reading committed to ledger.' });
       setFormData(prev => ({ 
         systolic: '', 
         diastolic: '', 
         pulse: '',
-        date: prev.date // Keep the selected date for potentially multiple entries
+        date: prev.date 
       }));
       
       setTimeout(() => {
@@ -54,7 +54,7 @@ export const LogForm = ({ category, onSuccess }) => {
     } catch (error) {
       setMessage({ 
         type: 'error', 
-        text: error.response?.data?.error || 'Failed to record reading' 
+        text: error.response?.data?.error || 'Transmission failure.' 
       });
     } finally {
       setLoading(false);
@@ -62,26 +62,26 @@ export const LogForm = ({ category, onSuccess }) => {
   };
 
   const categoryTime = {
-    Morning: '8:30 AM',
-    Afternoon: '2:00 PM',
-    Evening: '8:30 PM'
+    Morning: '08:30',
+    Afternoon: '14:00',
+    Evening: '20:30'
   };
 
   return (
-    <div className="glass-card max-w-md mx-auto animate-fade-in">
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400">
-            <Heart className="w-6 h-6" />
+    <div className="modern-card max-w-md mx-auto animate-modern-fade">
+      <div className="mb-10">
+        <div className="flex items-center gap-4 mb-3">
+          <div className="p-2 border border-white/20 text-white">
+            <Heart className="w-5 h-5" />
           </div>
-          <h2 className="text-2xl font-black text-white tracking-tight">{category} Reading</h2>
+          <h2 className="text-3xl font-black text-white tracking-tighter uppercase">{category} LOG</h2>
         </div>
-        <p className="text-slate-500 text-xs font-bold uppercase tracking-widest ml-11">Suggested Time: {categoryTime[category]}</p>
+        <p className="text-slate-600 text-[9px] font-black uppercase tracking-[0.3em] ml-14">REF TIME: {categoryTime[category]}</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-8">
         <div>
-          <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Measurement Date</label>
+          <label className="block text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] mb-3 ml-1">Log Date</label>
           <input
             type="date"
             name="date"
@@ -91,9 +91,9 @@ export const LogForm = ({ category, onSuccess }) => {
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-6">
           <div>
-            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Systolic</label>
+            <label className="block text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] mb-3 ml-1">Systolic</label>
             <input
               type="number"
               name="systolic"
@@ -104,7 +104,7 @@ export const LogForm = ({ category, onSuccess }) => {
             />
           </div>
           <div>
-            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Diastolic</label>
+            <label className="block text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] mb-3 ml-1">Diastolic</label>
             <input
               type="number"
               name="diastolic"
@@ -117,7 +117,7 @@ export const LogForm = ({ category, onSuccess }) => {
         </div>
 
         <div>
-          <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Pulse (BPM)</label>
+          <label className="block text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] mb-3 ml-1">Pulse (Rate)</label>
           <input
             type="number"
             name="pulse"
@@ -129,10 +129,10 @@ export const LogForm = ({ category, onSuccess }) => {
         </div>
 
         {message.text && (
-          <div className={`p-4 rounded-2xl text-xs font-bold uppercase tracking-widest animate-fade-in ${
+          <div className={`p-4 text-[10px] font-black uppercase tracking-widest animate-modern-fade border ${
             message.type === 'success' 
-              ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400' 
-              : 'bg-rose-500/10 border border-rose-500/20 text-rose-400'
+              ? 'bg-white text-black border-white' 
+              : 'bg-black text-white border-white/20'
           }`}>
             {message.text}
           </div>
@@ -147,9 +147,9 @@ export const LogForm = ({ category, onSuccess }) => {
         <button
           type="submit"
           disabled={loading}
-          className="btn-primary w-full mt-4 !py-4"
+          className="btn-primary w-full mt-6"
         >
-          {loading ? 'Recording...' : 'Save Reading'}
+          {loading ? 'Processing...' : 'Commit Reading'}
         </button>
       </form>
     </div>
