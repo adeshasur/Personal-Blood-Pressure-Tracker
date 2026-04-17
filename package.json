@@ -2,6 +2,7 @@
   "name": "personal-blood-pressure-tracker",
   "version": "1.0.0",
   "private": true,
+  "proxy": "http://localhost:5000",
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",
     "@vercel/postgres": "^0.10.0",

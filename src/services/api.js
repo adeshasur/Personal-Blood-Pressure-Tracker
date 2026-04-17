@@ -34,7 +34,7 @@ export const pressureService = {
 
   // Get latest readings
   getLatestReadings: () =>
-    api.get('/latest'),
+    api.get('/pressure/latest'),
 
   // Update reading
   updateReading: (id, data) =>

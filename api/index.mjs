@@ -97,6 +97,22 @@ app.get('/api/pressure/latest', async (req, res) => {
   }
 });
 
+// GET /api/pressure/date/:date - Get readings for a specific date
+app.get('/api/pressure/date/:date', async (req, res) => {
+  try {
+    const { date } = req.params;
+    const { rows } = await sql`
+      SELECT * FROM pressure_readings
+      WHERE date = ${date}
+      ORDER BY created_at DESC
+    `;
+    res.json(rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 // DELETE /api/pressure/:id
 app.delete('/api/pressure/:id', async (req, res) => {
   try {
