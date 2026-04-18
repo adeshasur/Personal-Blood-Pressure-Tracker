@@ -7,10 +7,9 @@ const firebaseConfig = {
   projectId: "wallpaper-incc",
   storageBucket: "wallpaper-incc.firebasestorage.app",
   messagingSenderId: "795698360511",
-  appId: "1:795698360511:web:2758ce907e88ee476ad60a",
-  measurementId: "G-PBTKYZJPDZ"
+  appId: "1:795698360511:web:2758ce907e88ee476ad60a"
 };
 
-// Initialize Firebase
+// Initialize Firebase without Analytics for maximum stability
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
