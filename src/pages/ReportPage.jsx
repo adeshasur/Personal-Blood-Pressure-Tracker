@@ -42,8 +42,8 @@ export const ReportPage = () => {
 
   // Group readings by date for the aggregated table view
   const groupedReadings = readings.reduce((acc, curr) => {
-    const date = curr.date || curr.created_at.split('T')[0];
-    if (!acc[date]) acc[date] = { date, Morning: null, Eve: null, Night: null };
+    const date = curr.date || curr.created_at?.split('T')[0];
+    if (!acc[date]) acc[date] = { date, Morning: null, Evening: null, Night: null };
     acc[date][curr.category] = curr;
     return acc;
   }, {});
@@ -74,11 +74,11 @@ export const ReportPage = () => {
        headStyles: { fillColor: '#111111' }
      });
 
-     const tableHeaders = [['Date', 'Morning', 'Eve', 'Night']];
+     const tableHeaders = [['Date', 'Morning', 'Evening', 'Night']];
      const tableBody = aggregatedRows.map(row => [
        new Date(row.date).toLocaleDateString(),
        row.Morning ? `${row.Morning.systolic}/${row.Morning.diastolic}` : '-',
-       row.Eve ? `${row.Eve.systolic}/${row.Eve.diastolic}` : '-',
+       row.Evening ? `${row.Evening.systolic}/${row.Evening.diastolic}` : '-',
        row.Night ? `${row.Night.systolic}/${row.Night.diastolic}` : '-'
      ]);
 
@@ -90,22 +90,22 @@ export const ReportPage = () => {
        theme: 'grid'
      });
 
-     doc.save(`BP_Report_Aggregated_${new Date().toISOString().split('T')[0]}.pdf`);
+     doc.save(`BP_Report_${new Date().toISOString().split('T')[0]}.pdf`);
   };
 
   const CompactReading = ({ reading }) => {
-    if (!reading) return <span className="text-[#EEEEEE] font-black tracking-widest text-[9px]">──</span>;
+    if (!reading) return <span className="text-[#F0F0F0] font-black tracking-widest text-[10px]">──</span>;
     const status = getBPStatus(reading.systolic, reading.diastolic);
     const isSerious = status.key.includes('stage-2') || status.key.includes('crisis');
     
     return (
       <div className="flex flex-col">
-        <span className={`font-black text-lg tracking-tighter ${isSerious ? 'text-red-600' : 'text-[#111111]'}`}>
+        <span className={`font-black text-xl tracking-tighter ${isSerious ? 'text-red-600' : 'text-[#111111]'}`}>
           {reading.systolic}<span className="text-[#DDDDDD] font-light mx-0.5">/</span>{reading.diastolic}
         </span>
         <div className="flex items-center gap-1.5 mt-0.5">
-           <span className="text-[9px] font-black text-[#BBBBBB] uppercase">{reading.pulse} BPM</span>
-           <span className={`text-[8px] font-black px-1.5 py-0.5 rounded-full border ${status.badge} leading-none`}>
+           <span className="text-[10px] font-black text-[#888888] uppercase tracking-tight">{reading.pulse} BPM</span>
+           <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded-full border ${status.badge} leading-none scale-90 origin-left`}>
               {status.label.split(' ')[0]}
            </span>
         </div>
@@ -113,7 +113,7 @@ export const ReportPage = () => {
     );
   };
 
-  if (loading) return <div className="max-w-6xl mx-auto px-6 py-24 text-center">Loading Data Matrix...</div>;
+  if (loading) return <div className="max-w-6xl mx-auto px-6 py-24 text-center">Loading Data Source...</div>;
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-16">
@@ -123,13 +123,13 @@ export const ReportPage = () => {
         <div className="space-y-4">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#FAFAFA] border border-[#F1F1F1] rounded-full text-[10px] font-black uppercase tracking-widest text-[#999999]">
             <ShieldCheck className="w-3.5 h-3.5" />
-            Aggregated Health Data
+            Cloud Database
           </div>
-          <h1 className="text-6xl font-extrabold tracking-tighter text-[#111111] leading-[0.9]">
+          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter text-[#111111] leading-[0.9]">
             Daily <span className="text-[#DDDDDD]">Metrics.</span>
           </h1>
           <p className="text-[#888888] font-medium tracking-tight max-w-lg text-lg">
-            Aggregated clinical summary for streamlined oversight of your biometric performance over time.
+            Aggregated clinical summary for streamlined oversight of your biometric performance across devices.
           </p>
         </div>
 
@@ -145,27 +145,35 @@ export const ReportPage = () => {
       {/* Main Table Matrix */}
       <div className="modern-card !p-0 overflow-hidden shadow-sm border-none bg-white">
         <div className="overflow-x-auto">
-          <table className="w-full text-left">
+          <table className="w-full text-left table-fixed">
             <thead className="bg-[#FAFAFA] border-b border-[#F1F1F1]">
               <tr>
-                <th className="px-8 py-6 text-[11px] font-black text-[#AAAAAA] uppercase tracking-[0.25em] w-48">Date</th>
-                <th className="px-8 py-6 text-[11px] font-black text-[#AAAAAA] uppercase tracking-[0.25em]">Morning</th>
-                <th className="px-8 py-6 text-[11px] font-black text-[#AAAAAA] uppercase tracking-[0.25em]">Evening (Eve)</th>
-                <th className="px-8 py-6 text-[11px] font-black text-[#AAAAAA] uppercase tracking-[0.25em]">Night</th>
+                <th className="px-8 py-6 text-[11px] font-black text-[#AAAAAA] uppercase tracking-[0.25em] w-1/4">Biometric Date</th>
+                <th className="px-8 py-6 text-[11px] font-black text-[#AAAAAA] uppercase tracking-[0.25em] w-1/4">Morning</th>
+                <th className="px-8 py-6 text-[11px] font-black text-[#AAAAAA] uppercase tracking-[0.25em] w-1/4">Evening</th>
+                <th className="px-8 py-6 text-[11px] font-black text-[#AAAAAA] uppercase tracking-[0.25em] w-1/4">Night</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#F1F1F1]">
-              {aggregatedRows.map(row => (
-                <tr key={row.date} className="hover:bg-[#FCFCFC] transition-colors group">
-                  <td className="px-8 py-8">
-                     <p className="font-black text-sm text-[#111111]">{new Date(row.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</p>
-                     <p className="text-[10px] font-bold text-[#CCCCCC] uppercase tracking-widest mt-1">{new Date(row.date).toLocaleDateString(undefined, { weekday: 'long' })}</p>
+              {aggregatedRows.length > 0 ? (
+                aggregatedRows.map(row => (
+                  <tr key={row.date} className="hover:bg-[#FCFCFC] transition-colors group">
+                    <td className="px-8 py-8">
+                       <p className="font-black text-sm text-[#111111]">{new Date(row.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                       <p className="text-[10px] font-extrabold text-[#777777] uppercase tracking-widest mt-1">{new Date(row.date).toLocaleDateString(undefined, { weekday: 'long' })}</p>
+                    </td>
+                    <td className="px-8 py-8"><CompactReading reading={row.Morning} /></td>
+                    <td className="px-8 py-8"><CompactReading reading={row.Evening} /></td>
+                    <td className="px-8 py-8"><CompactReading reading={row.Night} /></td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4" className="px-8 py-20 text-center text-[10px] font-black text-[#CCCCCC] uppercase tracking-widest">
+                    No historical records discovered in cloud storage
                   </td>
-                  <td className="px-8 py-8"><CompactReading reading={row.Morning} /></td>
-                  <td className="px-8 py-8"><CompactReading reading={row.Eve} /></td>
-                  <td className="px-8 py-8"><CompactReading reading={row.Night} /></td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>

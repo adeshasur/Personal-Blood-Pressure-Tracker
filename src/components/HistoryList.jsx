@@ -5,7 +5,7 @@ import { getBPStatus } from '../utils/health.js';
 
 const DAILY_SLOTS = [
   { category: 'Morning', time: '08:30' },
-  { category: 'Eve',     time: '18:30' },
+  { category: 'Evening', time: '18:30' },
   { category: 'Night',   time: '22:30' },
 ];
 
@@ -92,9 +92,9 @@ const DayBlock = ({ dateStr, readings, onDelete }) => {
         </div>
         <div>
           <p className="text-base font-extrabold text-[#111111] tracking-tight">{day}</p>
-          <p className="text-[10px] font-bold text-[#999999] uppercase tracking-widest">{week}</p>
+          <p className="text-[10px] font-bold text-[#777777] uppercase tracking-widest">{week}</p>
         </div>
-        <div className="ml-auto text-[10px] font-black text-[#DDDDDD] uppercase tracking-[0.2em] bg-white px-3 py-1.5 rounded-full border border-[#F1F1F1]">
+        <div className="ml-auto text-[10px] font-black text-[#BBBBBB] uppercase tracking-[0.2em] bg-white px-3 py-1.5 rounded-full border border-[#F1F1F1]">
           {readings.length}/3 ENTRIES
         </div>
       </div>

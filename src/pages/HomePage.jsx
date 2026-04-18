@@ -33,7 +33,7 @@ export const HomePage = () => {
             <Activity className="w-3.5 h-3.5" />
             Vitals Overview
           </div>
-          <h1 className="text-6xl font-extrabold tracking-tighter text-[#111111] leading-[0.9]">
+          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter text-[#111111] leading-[0.9]">
             Biometric <span className="text-[#DDDDDD]">Dashboard.</span>
           </h1>
           <p className="text-[#888888] font-medium tracking-tight max-w-lg text-lg">

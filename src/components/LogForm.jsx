@@ -36,7 +36,7 @@ export const LogForm = ({ onReadingsUpdate }) => {
 
   const categories = [
     { id: 'Morning', icon: Coffee,  time: '08:30 AM' },
-    { id: 'Eve',     icon: Sunset,  time: '18:30 PM' },
+    { id: 'Evening', icon: Sunset,  time: '18:30 PM' },
     { id: 'Night',   icon: Moon,    time: '22:30 PM' }
   ];
 
