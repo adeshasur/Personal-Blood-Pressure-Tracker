@@ -63,7 +63,7 @@ export const pressureService = {
         ...data,
         systolic: parseInt(data.systolic),
         diastolic: parseInt(data.diastolic),
-        pulse: parseInt(data.pulse),
+        pulse: data.pulse ? parseInt(data.pulse) : null,
         created_at: serverTimestamp()
       });
       return { data: { id: docRef.id, ...data } };
@@ -136,11 +136,15 @@ export const pressureService = {
       const readings = snapshot.docs.map(d => d.data());
       
       const groupedMap = readings.reduce((acc, r) => {
-        if (!acc[r.date]) acc[r.date] = { systolic: 0, diastolic: 0, pulse: 0, count: 0 };
-        acc[r.date].systolic += r.systolic;
-        acc[r.date].diastolic += r.diastolic;
-        acc[r.date].pulse += r.pulse;
+        if (!acc[r.date]) acc[r.date] = { systolic: 0, diastolic: 0, pulse: 0, count: 0, pulseCount: 0 };
+        acc[r.date].systolic += (r.systolic || 0);
+        acc[r.date].diastolic += (r.diastolic || 0);
         acc[r.date].count += 1;
+        
+        if (r.pulse !== null && r.pulse !== undefined) {
+          acc[r.date].pulse += r.pulse;
+          acc[r.date].pulseCount += 1;
+        }
         return acc;
       }, {});
 
@@ -149,7 +153,7 @@ export const pressureService = {
           date,
           avg_systolic: data.systolic / data.count,
           avg_diastolic: data.diastolic / data.count,
-          avg_pulse: data.pulse / data.count
+          avg_pulse: data.pulseCount > 0 ? data.pulse / data.pulseCount : null
         }))
         .sort((a, b) => a.date.localeCompare(b.date));
 

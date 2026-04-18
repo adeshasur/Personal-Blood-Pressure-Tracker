@@ -126,7 +126,9 @@ export const ReportPage = () => {
           {reading.systolic}<span className="text-[#DDDDDD] font-light mx-0.5">/</span>{reading.diastolic}
         </span>
         <div className="flex items-center gap-1.5 mt-0.5">
-           <span className="text-[9px] font-bold text-[#999999] uppercase tracking-tight">{reading.pulse} BPM</span>
+           <span className="text-[9px] font-bold text-[#999999] uppercase tracking-tight">
+             {reading.pulse ? `${reading.pulse} BPM` : 'No Pulse'}
+           </span>
            <span className={`text-[7px] font-black px-1.5 py-0.5 rounded-full border ${status.badge} scale-90 origin-left`}>
               {status.label.split(' ')[0]}
            </span>

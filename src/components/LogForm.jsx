@@ -114,7 +114,6 @@ export const LogForm = ({ onReadingsUpdate }) => {
           <label className="text-[10px] font-black text-[#999999] uppercase tracking-[0.2em] ml-1">Biometric Pulse</label>
           <div className="relative">
             <input
-              required
               type="number"
               placeholder="00"
               value={formData.pulse}
