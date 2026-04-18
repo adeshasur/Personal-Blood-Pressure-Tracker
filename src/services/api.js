@@ -80,7 +80,6 @@ export const pressureService = {
       const q = query(
         collection(db, COLLECTION_NAME), 
         orderBy("date", "desc"),
-        orderBy("created_at", "desc"),
         limit(maxCount)
       );
       const snapshot = await getDocs(q);
@@ -165,7 +164,7 @@ export const pressureService = {
   getLatestReadings: async () => {
     try {
       const today = new Date().toISOString().split('T')[0];
-      const q = query(collection(db, COLLECTION_NAME), orderBy("date", "desc"), limit(10));
+      const q = query(collection(db, COLLECTION_NAME), orderBy("date", "desc"), limit(20));
       const snapshot = await getDocs(q);
       const filtered = snapshot.docs
         .map(d => ({ id: d.id, ...d.data() }))
