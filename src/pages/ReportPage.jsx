@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { pressureService } from '../services/api.js';
-import { jsPDF } from 'jspdf';
+import jsPDF from 'jspdf';
 import { getBPStatus } from '../utils/health.js';
 import 'jspdf-autotable';
 import { Download, ShieldCheck } from 'lucide-react';
@@ -52,6 +52,11 @@ export const ReportPage = () => {
   const generatePDF = () => {
     try {
       console.log('Initiating PDF generation...');
+      
+      if (typeof jsPDF !== 'function' && typeof jsPDF?.default !== 'function') {
+        throw new Error('PDF Library not loaded correctly');
+      }
+
       const doc = new jsPDF();
       
       // Header
