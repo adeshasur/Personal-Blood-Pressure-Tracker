@@ -16,7 +16,7 @@ export const pressureService = {
   createReading: (data) =>
     api.post('/pressure', data),
 
-  // Get all readings
+  // Get all readings (flat list, paginated)
   getReadings: (limit = 50, offset = 0) =>
     api.get('/pressure', { params: { limit, offset } }),
 
@@ -35,6 +35,10 @@ export const pressureService = {
   // Get latest readings
   getLatestReadings: () =>
     api.get('/pressure/latest'),
+
+  // Get all readings grouped by date (for calendar/history view)
+  getHistory: () =>
+    api.get('/pressure/history'),
 
   // Update reading
   updateReading: (id, data) =>

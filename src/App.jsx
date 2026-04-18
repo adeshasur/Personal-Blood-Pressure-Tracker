@@ -1,8 +1,26 @@
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { HomePage } from './pages/HomePage.jsx';
-import { LogPage } from './pages/LogPage.jsx';
-import { Heart, BarChart3 } from 'lucide-react';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { HomePage }   from './pages/HomePage.jsx';
+import { LogPage }    from './pages/LogPage.jsx';
+import { ReportPage } from './pages/ReportPage.jsx';
+import { Heart, BarChart3, FileText, PlusCircle } from 'lucide-react';
 import './index.css';
+
+const NavLink = ({ to, children, className = '' }) => {
+  const location = useLocation();
+  const isActive = location.pathname === to;
+  return (
+    <Link
+      to={to}
+      className={`flex items-center gap-2 px-4 py-2 text-sm font-bold transition-all duration-300 ${
+        isActive
+          ? 'text-white bg-white/10 border border-white/20'
+          : 'text-slate-400 hover:text-white hover:bg-white/5 border border-transparent'
+      } ${className}`}
+    >
+      {children}
+    </Link>
+  );
+};
 
 function App() {
   return (
@@ -10,37 +28,39 @@ function App() {
       <div className="min-h-screen">
         {/* Navigation */}
         <nav className="sticky top-0 z-50 border-b border-white/5 bg-slate-950/80 backdrop-blur-xl">
-          <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+
+            {/* Logo */}
             <Link to="/" className="flex items-center gap-3 text-xl font-black hover:opacity-80 transition-opacity">
-              <div className="p-2 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 shadow-lg shadow-indigo-500/20">
-                <Heart className="w-5 h-5 text-white fill-current" />
+              <div className="p-2 bg-white text-black">
+                <Heart className="w-5 h-5 fill-current" />
               </div>
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">BP Tracker</span>
+              <span className="text-white tracking-tighter">BP TRACKER</span>
             </Link>
-            
-            <div className="flex items-center gap-2">
-              <Link 
-                to="/" 
-                className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-slate-400 hover:text-white hover:bg-white/5 transition-all duration-300 underline-offset-8"
-              >
+
+            {/* Nav links */}
+            <div className="flex items-center gap-1">
+              <NavLink to="/">
                 <BarChart3 className="w-4 h-4" />
                 Dashboard
-              </Link>
-              <Link 
-                to="/log" 
-                className="btn-primary flex items-center gap-2 !px-5 !py-2.5 !text-sm"
-              >
-                <Heart className="w-4 h-4 fill-current" />
+              </NavLink>
+              <NavLink to="/report">
+                <FileText className="w-4 h-4" />
+                Report
+              </NavLink>
+              <NavLink to="/log" className="!border-white/20 !text-white !bg-white/5 hover:!bg-white hover:!text-black ml-2">
+                <PlusCircle className="w-4 h-4" />
                 Log Reading
-              </Link>
+              </NavLink>
             </div>
           </div>
         </nav>
 
         {/* Routes */}
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/log" element={<LogPage />} />
+          <Route path="/"       element={<HomePage />}   />
+          <Route path="/log"    element={<LogPage />}    />
+          <Route path="/report" element={<ReportPage />} />
         </Routes>
       </div>
     </Router>
