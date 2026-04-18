@@ -2,22 +2,15 @@
   "name": "personal-blood-pressure-tracker",
   "version": "1.0.0",
   "private": true,
-  "proxy": "http://localhost:5000",
   "dependencies": {
-    "@neondatabase/serverless": "^1.0.2",
-    "@vercel/postgres": "^0.10.0",
     "axios": "^1.15.0",
-    "cors": "^2.8.6",
-    "express": "^5.2.1",
     "jspdf": "^4.2.1",
     "jspdf-autotable": "^5.0.7",
     "lucide-react": "^0.263.1",
-    "pg": "^8.20.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.14.0",
-    "recharts": "^2.7.2",
-    "serverless-http": "^4.0.0"
+    "recharts": "^2.7.2"
   },
   "scripts": {
     "start": "react-scripts start",
