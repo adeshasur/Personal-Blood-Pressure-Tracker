@@ -9,24 +9,24 @@ const STORAGE_KEY = 'bp_tracker_readings';
 const INITIAL_DATA = [
   // Apr 13
   { date: '2026-04-13', systolic: 116, diastolic: 90, pulse: 72, category: 'Morning', id: 'seed-1' },
-  { date: '2026-04-13', systolic: 118, diastolic: 70, pulse: 72, category: 'Afternoon', id: 'seed-2' },
-  { date: '2026-04-13', systolic: 119, diastolic: 75, pulse: 72, category: 'Evening', id: 'seed-3' },
+  { date: '2026-04-13', systolic: 118, diastolic: 70, pulse: 72, category: 'Eve', id: 'seed-2' },
+  { date: '2026-04-13', systolic: 119, diastolic: 75, pulse: 72, category: 'Night', id: 'seed-3' },
   // Apr 14
   { date: '2026-04-14', systolic: 120, diastolic: 78, pulse: 72, category: 'Morning', id: 'seed-4' },
-  { date: '2026-04-14', systolic: 114, diastolic: 66, pulse: 72, category: 'Afternoon', id: 'seed-5' },
-  { date: '2026-04-14', systolic: 121, diastolic: 79, pulse: 72, category: 'Evening', id: 'seed-6' },
+  { date: '2026-04-14', systolic: 114, diastolic: 66, pulse: 72, category: 'Eve', id: 'seed-5' },
+  { date: '2026-04-14', systolic: 121, diastolic: 79, pulse: 72, category: 'Night', id: 'seed-6' },
   // Apr 15
   { date: '2026-04-15', systolic: 120, diastolic: 82, pulse: 72, category: 'Morning', id: 'seed-7' },
-  { date: '2026-04-15', systolic: 119, diastolic: 72, pulse: 72, category: 'Afternoon', id: 'seed-8' },
-  { date: '2026-04-15', systolic: 113, diastolic: 54, pulse: 72, category: 'Evening', id: 'seed-9' },
+  { date: '2026-04-15', systolic: 119, diastolic: 72, pulse: 72, category: 'Eve', id: 'seed-8' },
+  { date: '2026-04-15', systolic: 113, diastolic: 54, pulse: 72, category: 'Night', id: 'seed-9' },
   // Apr 16
   { date: '2026-04-16', systolic: 131, diastolic: 73, pulse: 72, category: 'Morning', id: 'seed-10' },
-  { date: '2026-04-16', systolic: 129, diastolic: 78, pulse: 72, category: 'Afternoon', id: 'seed-11' },
-  { date: '2026-04-16', systolic: 135, diastolic: 112, pulse: 72, category: 'Evening', id: 'seed-12' },
+  { date: '2026-04-16', systolic: 129, diastolic: 78, pulse: 72, category: 'Eve', id: 'seed-11' },
+  { date: '2026-04-16', systolic: 135, diastolic: 112, pulse: 72, category: 'Night', id: 'seed-12' },
   // Apr 17
   { date: '2026-04-17', systolic: 131, diastolic: 91, pulse: 72, category: 'Morning', id: 'seed-13' },
   // Apr 18
-  { date: '2026-04-18', systolic: 123, diastolic: 75, pulse: 72, category: 'Afternoon', id: 'seed-14' },
+  { date: '2026-04-18', systolic: 123, diastolic: 75, pulse: 72, category: 'Eve', id: 'seed-14' },
 ];
 
 /**
@@ -100,7 +100,7 @@ export const pressureService = {
       }, {});
 
       // Sort readings within each day by category order
-      const CATEGORY_ORDER = { Morning: 1, Afternoon: 2, Evening: 3 };
+      const CATEGORY_ORDER = { Morning: 1, Eve: 2, Night: 3 };
       
       const result = Object.entries(groupedMap)
         .map(([date, dayReadings]) => ({

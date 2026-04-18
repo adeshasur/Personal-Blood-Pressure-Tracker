@@ -1,26 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Trash2, CalendarDays, AlertCircle } from 'lucide-react';
 import { pressureService } from '../services/api.js';
-
-// ── Status helpers ──────────────────────────────────────────────────────────
-const getStatus = (systolic, diastolic) => {
-  if (systolic >= 180 || diastolic >= 120) return 'crisis';
-  if (systolic >= 140 || diastolic >= 90)  return 'high';
-  if (systolic >= 130)                      return 'elevated';
-  return 'normal';
-};
-
-const STATUS_META = {
-  normal:   { label: 'Normal',   bg: 'bg-emerald-50/50',  text: 'text-emerald-700', badge: 'bg-emerald-100 text-emerald-700' },
-  elevated: { label: 'Elevated', bg: 'bg-amber-50/50',    text: 'text-amber-700',   badge: 'bg-amber-100 text-amber-700'     },
-  high:     { label: 'High',     bg: 'bg-orange-50/50',   text: 'text-orange-700',  badge: 'bg-orange-100 text-orange-700'   },
-  crisis:   { label: 'Crisis',   bg: 'bg-red-50/50',      text: 'text-red-700',     badge: 'bg-red-100 text-red-700'         },
-};
+import { getBPStatus } from '../utils/health.js';
 
 const DAILY_SLOTS = [
-  { category: 'Morning',   time: '08:30' },
-  { category: 'Afternoon', time: '14:00' },
-  { category: 'Evening',   time: '20:30' },
+  { category: 'Morning', time: '08:30' },
+  { category: 'Eve',     time: '18:30' },
+  { category: 'Night',   time: '22:30' },
 ];
 
 const formatDate = (dateStr) => {
@@ -33,14 +19,13 @@ const formatDate = (dateStr) => {
 // ── SlotRow ─────────────────────────────────────────────────────────────────
 const SlotRow = ({ slot, reading, onDelete }) => {
   const isEmpty = !reading;
-  const status  = isEmpty ? null : getStatus(reading.systolic, reading.diastolic);
-  const meta    = isEmpty ? null : STATUS_META[status];
+  const status  = isEmpty ? null : getBPStatus(reading.systolic, reading.diastolic);
 
   if (isEmpty) {
     return (
       <div className="flex items-center gap-4 px-6 py-4 border-b border-[#F5F5F5] last:border-0">
         <div className="w-1.5 h-1.5 rounded-full bg-[#EEEEEE]" />
-        <span className="text-[11px] font-bold text-[#CCCCCC] uppercase tracking-wider w-20">
+        <span className="text-[11px] font-bold text-[#999999] uppercase tracking-wider w-20">
           {slot.category}
         </span>
         <div className="flex items-center gap-2 flex-1">
@@ -54,15 +39,15 @@ const SlotRow = ({ slot, reading, onDelete }) => {
   }
 
   return (
-    <div className={`group flex items-center gap-4 px-6 py-4 border-b border-[#F5F5F5] last:border-0 transition-all ${meta.bg}`}>
-      <div className={`w-1.5 h-1.5 rounded-full ${meta.text.replace('text-', 'bg-')}`} />
+    <div className={`group flex items-center gap-4 px-6 py-4 border-b border-[#F5F5F5] last:border-0 transition-all ${status.color}`}>
+      <div className={`w-1.5 h-1.5 rounded-full ${status.badge.split(' ')[1].replace('text-', 'bg-')}`} />
       
       <span className="text-[11px] font-bold text-[#999999] uppercase tracking-wider w-20">
         {slot.category}
       </span>
 
       <div className="flex items-baseline gap-1.5 flex-1">
-        <span className={`text-2xl font-extrabold tracking-tighter ${meta.text}`}>
+        <span className={`text-2xl font-extrabold tracking-tighter ${status.badge.split(' ')[1]}`}>
           {reading.systolic}
           <span className="text-[#DDDDDD] mx-0.5 font-light">/</span>
           {reading.diastolic}
@@ -75,8 +60,8 @@ const SlotRow = ({ slot, reading, onDelete }) => {
           {reading.pulse} <span className="opacity-50">bpm</span>
         </span>
         
-        <span className={`text-[9px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full ${meta.badge} w-20 text-center`}>
-          {meta.label}
+        <span className={`text-[9px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full ${status.badge} w-32 text-center shadow-sm`}>
+          {status.label}
         </span>
 
         <div className="opacity-0 group-hover:opacity-100 transition-all">
@@ -107,7 +92,7 @@ const DayBlock = ({ dateStr, readings, onDelete }) => {
         </div>
         <div>
           <p className="text-base font-extrabold text-[#111111] tracking-tight">{day}</p>
-          <p className="text-[10px] font-bold text-[#AAAAAA] uppercase tracking-widest">{week}</p>
+          <p className="text-[10px] font-bold text-[#999999] uppercase tracking-widest">{week}</p>
         </div>
         <div className="ml-auto text-[10px] font-black text-[#DDDDDD] uppercase tracking-[0.2em] bg-white px-3 py-1.5 rounded-full border border-[#F1F1F1]">
           {readings.length}/3 ENTRIES
@@ -194,7 +179,7 @@ export const HistoryList = ({ refreshTrigger }) => {
     return (
       <div className="modern-card text-center py-24 border-dashed bg-[#FAFAFA]/30">
         <p className="text-[#AAAAAA] font-extrabold uppercase tracking-widest text-xs">No entries recorded</p>
-        <p className="text-[#CCCCCC] text-[11px] mt-2 font-bold uppercase">Begin logging to populate your clinical history</p>
+        <p className="text-[#999999] text-[11px] mt-2 font-bold uppercase">Begin logging to populate your clinical history</p>
       </div>
     );
   }
