@@ -9,6 +9,7 @@ export const ReportPage = () => {
   const [readings, setReadings] = useState([]);
   const [stats, setStats] = useState({ systolic: 0, diastolic: 0, pulse: 0, count: 0 });
   const [loading, setLoading] = useState(true);
+  const DEPLOY_VERSION = 'v1.2.5-STABLE';
 
   useEffect(() => {
     const fetchData = async () => {
@@ -144,6 +145,7 @@ export const ReportPage = () => {
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#FAFAFA] border border-[#F1F1F1] rounded-full text-[10px] font-bold uppercase tracking-widest text-[#777777]">
             <ShieldCheck className="w-3.5 h-3.5" />
             Authenticated Source
+            <span className="ml-2 pl-2 border-l border-[#EEEEEE] text-[#BBBBBB]">{DEPLOY_VERSION}</span>
           </div>
           <h1 className="page-title">
             Daily <span className="text-[#DDDDDD]">Metrics.</span>
