@@ -1,59 +1,74 @@
 import { useState } from 'react';
-import { LogForm } from '../components/LogForm';
-import { HistoryList } from '../components/HistoryList';
-import { Clock } from 'lucide-react';
+import { LogForm } from '../components/LogForm.jsx';
+import { HistoryList } from '../components/HistoryList.jsx';
+import { Calendar, History, ClipboardCheck } from 'lucide-react';
 
 export const LogPage = () => {
-  const [activeCategory, setActiveCategory] = useState('Morning');
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  const categories = ['Morning', 'Afternoon', 'Evening'];
-
-  const handleSuccess = () => {
+  const handleReadingsUpdate = () => {
     setRefreshTrigger(prev => prev + 1);
   };
 
   return (
-    <div className="pt-24 pb-32">
-      <div className="max-w-7xl mx-auto px-8">
-        <header className="mb-24 animate-modern-fade">
-          <div className="flex items-center gap-6">
-            <div className="p-4 border border-white/20 text-white">
-              <Clock className="w-10 h-10" />
+    <div className="bg-[#FFFFFF]">
+      <div className="max-w-6xl mx-auto px-6 py-16">
+        
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-20 border-b border-[#F5F5F5] pb-12">
+          <div className="space-y-3">
+             <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#FAFAFA] border border-[#F1F1F1] rounded-full text-[10px] font-bold uppercase tracking-widest text-[#999999]">
+              <ClipboardCheck className="w-3.5 h-3.5" />
+              Electronic Health Record
             </div>
-            <div>
-              <h1 className="text-5xl font-black text-white tracking-tighter uppercase">Logging.</h1>
-              <p className="text-slate-600 text-[10px] font-black uppercase tracking-[0.3em] mt-2">Biometric data acquisition interface</p>
+            <h1 className="text-6xl font-extrabold tracking-tighter text-[#111111]">
+              Data <span className="text-[#DDDDDD]">Journal.</span>
+            </h1>
+            <p className="text-[#888888] font-medium tracking-tight max-w-lg text-lg">
+              Precisely record your biometric readings into your secure local ledger for long-term clinical oversight.
+            </p>
+          </div>
+
+          <div className="flex gap-4">
+            <div className="modern-card !p-4 flex items-center gap-3 border-none bg-[#FAFAFA] shadow-none">
+              <div className="p-2.5 bg-white border border-[#F1F1F1] rounded-xl">
+                 <Calendar className="w-5 h-5 text-[#111111]" />
+              </div>
+              <div>
+                 <p className="text-[10px] font-bold text-[#AAAAAA] uppercase">Current Date</p>
+                 <p className="text-sm font-bold text-[#111111]">{new Date().toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}</p>
+              </div>
             </div>
           </div>
-        </header>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
-          {/* Form Section */}
-          <div className="lg:col-span-4 space-y-12 animate-modern-fade">
-            <div className="space-y-4">
-              <p className="text-[9px] font-black text-slate-700 uppercase tracking-[0.4em] ml-1 mb-6">Phase Selector</p>
-              {categories.map(category => (
-                <button
-                  key={category}
-                  onClick={() => setActiveCategory(category)}
-                  className={`category-btn ${activeCategory === category ? 'active' : ''}`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-black tracking-widest text-[11px] uppercase">{category}</span>
-                    {activeCategory === category && (
-                      <div className="w-1 h-3 bg-black" />
-                    )}
-                  </div>
-                </button>
-              ))}
+          {/* Form Column */}
+          <div className="lg:col-span-4 lg:sticky lg:top-36 h-fit">
+            <div className="space-y-6">
+               <div className="flex items-center gap-3 mb-2 px-1">
+                 <div className="w-8 h-8 rounded-full bg-[#111111] flex items-center justify-center text-white font-bold text-xs shadow-lg">01</div>
+                 <h3 className="text-sm font-black text-[#111111] uppercase tracking-[0.2em]">Capture Data</h3>
+               </div>
+               <LogForm onReadingsUpdate={handleReadingsUpdate} />
             </div>
-            <LogForm category={activeCategory} onSuccess={handleSuccess} />
           </div>
 
-          {/* History Section */}
-          <div className="lg:col-span-8 animate-modern-fade [animation-delay:150ms]">
-            <HistoryList refreshTrigger={refreshTrigger} />
+          {/* History Column */}
+          <div className="lg:col-span-8">
+            <div className="space-y-6">
+               <div className="flex items-center justify-between mb-2 px-1">
+                 <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-[#FAFAFA] border border-[#F1F1F1] flex items-center justify-center text-[#111111] font-bold text-xs">02</div>
+                    <h3 className="text-sm font-black text-[#111111] uppercase tracking-[0.2em]">Entry History</h3>
+                 </div>
+                 <div className="flex items-center gap-2 text-[10px] font-bold text-[#CCCCCC] uppercase tracking-widest">
+                    <History className="w-3.5 h-3.5" />
+                    Real-time Sync
+                 </div>
+               </div>
+               <HistoryList refreshTrigger={refreshTrigger} />
+            </div>
           </div>
         </div>
       </div>

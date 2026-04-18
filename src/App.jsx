@@ -2,20 +2,20 @@ import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react
 import { HomePage }   from './pages/HomePage.jsx';
 import { LogPage }    from './pages/LogPage.jsx';
 import { ReportPage } from './pages/ReportPage.jsx';
-import { Heart, BarChart3, FileText, PlusCircle } from 'lucide-react';
+import { Heart, Home, FileText, Plus } from 'lucide-react';
 import './index.css';
 
-const NavLink = ({ to, children, className = '' }) => {
+const NavLink = ({ to, children }) => {
   const location = useLocation();
   const isActive = location.pathname === to;
   return (
     <Link
       to={to}
-      className={`flex items-center gap-2 px-4 py-2 text-sm font-bold transition-all duration-300 ${
+      className={`flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-full transition-all duration-300 ${
         isActive
-          ? 'text-white bg-white/10 border border-white/20'
-          : 'text-slate-400 hover:text-white hover:bg-white/5 border border-transparent'
-      } ${className}`}
+          ? 'text-white bg-[#111111]'
+          : 'text-[#666666] hover:text-[#111111] hover:bg-[#FAFAFA]'
+      }`}
     >
       {children}
     </Link>
@@ -25,43 +25,50 @@ const NavLink = ({ to, children, className = '' }) => {
 function App() {
   return (
     <Router>
-      <div className="min-h-screen">
-        {/* Navigation */}
-        <nav className="sticky top-0 z-50 border-b border-white/5 bg-slate-950/80 backdrop-blur-xl">
-          <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-
+      <div className="min-h-screen bg-white">
+        {/* Minimal Navigation */}
+        <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#F1F1F1]">
+          <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+            
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-3 text-xl font-black hover:opacity-80 transition-opacity">
-              <div className="p-2 bg-white text-black">
+            <Link to="/" className="flex items-center gap-2.5 group">
+              <div className="p-2 bg-[#111111] text-white rounded-xl group-hover:scale-105 transition-transform duration-300">
                 <Heart className="w-5 h-5 fill-current" />
               </div>
-              <span className="text-white tracking-tighter">BP TRACKER</span>
+              <span className="font-bold text-xl tracking-tight text-[#111111]">BP Tracker</span>
             </Link>
 
-            {/* Nav links */}
-            <div className="flex items-center gap-1">
+            {/* Navigation Links */}
+            <div className="hidden md:flex items-center gap-1 p-1 bg-[#FAFAFA] rounded-full border border-[#F1F1F1]">
               <NavLink to="/">
-                <BarChart3 className="w-4 h-4" />
+                <Home className="w-4 h-4" />
                 Dashboard
               </NavLink>
               <NavLink to="/report">
                 <FileText className="w-4 h-4" />
                 Report
               </NavLink>
-              <NavLink to="/log" className="!border-white/20 !text-white !bg-white/5 hover:!bg-white hover:!text-black ml-2">
-                <PlusCircle className="w-4 h-4" />
-                Log Reading
-              </NavLink>
             </div>
+
+            {/* Log Action */}
+            <Link 
+              to="/log" 
+              className="flex items-center gap-2 px-6 py-2.5 bg-[#111111] text-white rounded-full font-bold text-sm hover:bg-[#333333] transition-all duration-300 active:scale-95 shadow-sm"
+            >
+              <Plus className="w-4 h-4" />
+              Log Reading
+            </Link>
           </div>
         </nav>
 
-        {/* Routes */}
-        <Routes>
-          <Route path="/"       element={<HomePage />}   />
-          <Route path="/log"    element={<LogPage />}    />
-          <Route path="/report" element={<ReportPage />} />
-        </Routes>
+        {/* Page Content */}
+        <main className="page-transition">
+          <Routes>
+            <Route path="/"       element={<HomePage />}   />
+            <Route path="/log"    element={<LogPage />}    />
+            <Route path="/report" element={<ReportPage />} />
+          </Routes>
+        </main>
       </div>
     </Router>
   );

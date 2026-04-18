@@ -1,155 +1,142 @@
 import { useState } from 'react';
-import { Heart } from 'lucide-react';
 import { pressureService } from '../services/api.js';
-import { StatusIndicator } from './Common';
+import { Coffee, Sun, Moon, CheckCircle2 } from 'lucide-react';
 
-export const LogForm = ({ category, onSuccess }) => {
+export const LogForm = ({ onReadingsUpdate }) => {
   const [formData, setFormData] = useState({
     systolic: '',
     diastolic: '',
     pulse: '',
-    date: new Date().toISOString().split('T')[0], // Default to today
+    category: 'Morning',
+    date: new Date().toISOString().split('T')[0]
   });
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState({ type: '', text: '' });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: name === 'date' ? value : (value ? parseInt(value) : '')
-    }));
-  };
+  const [lastSaved, setLastSaved] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!formData.systolic || !formData.diastolic || !formData.pulse) {
-      setMessage({ type: 'error', text: 'Incomplete data. Please check fields.' });
-      return;
-    }
-
     setLoading(true);
     try {
       await pressureService.createReading({
-        systolic: formData.systolic,
-        diastolic: formData.diastolic,
-        pulse: formData.pulse,
-        date: formData.date,
-        category,
+        ...formData,
+        systolic: parseInt(formData.systolic),
+        diastolic: parseInt(formData.diastolic),
+        pulse: parseInt(formData.pulse)
       });
-
-      setMessage({ type: 'success', text: 'Reading committed to ledger.' });
-      setFormData(prev => ({ 
-        systolic: '', 
-        diastolic: '', 
-        pulse: '',
-        date: prev.date 
-      }));
-      
-      setTimeout(() => {
-        setMessage({ type: '', text: '' });
-        if (onSuccess) onSuccess();
-      }, 2000);
-    } catch (error) {
-      setMessage({ 
-        type: 'error', 
-        text: error.response?.data?.error || 'Transmission failure.' 
-      });
+      onReadingsUpdate();
+      setLastSaved(true);
+      setTimeout(() => setLastSaved(false), 3000);
+      setFormData({ ...formData, systolic: '', diastolic: '', pulse: '' });
+    } catch (err) {
+      console.error('Save failed:', err);
     } finally {
       setLoading(false);
     }
   };
 
-  const categoryTime = {
-    Morning: '08:30',
-    Afternoon: '14:00',
-    Evening: '20:30'
-  };
+  const categories = [
+    { id: 'Morning', icon: Coffee, time: '08:30 AM' },
+    { id: 'Afternoon', icon: Sun, time: '02:00 PM' },
+    { id: 'Evening', icon: Moon, time: '08:30 PM' }
+  ];
 
   return (
-    <div className="modern-card max-w-md mx-auto animate-modern-fade">
-      <div className="mb-10">
-        <div className="flex items-center gap-4 mb-3">
-          <div className="p-2 border border-white/20 text-white">
-            <Heart className="w-5 h-5" />
-          </div>
-          <h2 className="text-3xl font-black text-white tracking-tighter uppercase">{category} LOG</h2>
-        </div>
-        <p className="text-slate-600 text-[9px] font-black uppercase tracking-[0.3em] ml-14">REF TIME: {categoryTime[category]}</p>
-      </div>
-
+    <div className="modern-card shadow-[0_20px_50px_rgb(0,0,0,0.03)] border-none">
       <form onSubmit={handleSubmit} className="space-y-8">
-        <div>
-          <label className="block text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] mb-3 ml-1">Log Date</label>
+        
+        {/* Category Selector */}
+        <div className="space-y-3">
+          <label className="text-[10px] font-bold text-[#AAAAAA] uppercase tracking-widest ml-1">Measurement Phase</label>
+          <div className="grid grid-cols-3 gap-2">
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => setFormData({ ...formData, category: cat.id })}
+                className={`flex flex-col items-center gap-2 p-4 rounded-2xl border transition-all duration-300 ${
+                  formData.category === cat.id
+                    ? 'bg-[#111111] border-[#111111] text-white shadow-lg'
+                    : 'bg-[#FAFAFA] border-[#F1F1F1] text-[#999999] hover:border-[#DDDDDD]'
+                }`}
+              >
+                <cat.icon className="w-5 h-5" />
+                <span className="text-[9px] font-black uppercase tracking-tighter">{cat.id}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Date Input */}
+        <div className="space-y-3">
+          <label className="text-[10px] font-bold text-[#AAAAAA] uppercase tracking-widest ml-1">Log Date</label>
           <input
             type="date"
-            name="date"
             value={formData.date}
-            onChange={handleChange}
-            className="input-field"
+            onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+            className="input-field !text-sm !font-bold"
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-6">
-          <div>
-            <label className="block text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] mb-3 ml-1">Systolic</label>
-            <input
-              type="number"
-              name="systolic"
-              value={formData.systolic}
-              onChange={handleChange}
-              placeholder="120"
-              className="input-field"
-            />
+        {/* Main Inputs Row */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-3">
+            <label className="text-[10px] font-bold text-[#AAAAAA] uppercase tracking-widest ml-1">Systolic</label>
+            <div className="relative">
+              <input
+                required
+                type="number"
+                placeholder="120"
+                value={formData.systolic}
+                onChange={(e) => setFormData({ ...formData, systolic: e.target.value })}
+                className="input-field text-xl font-extrabold pr-12"
+              />
+              <span className="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-bold text-[#CCCCCC]">SYS</span>
+            </div>
           </div>
-          <div>
-            <label className="block text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] mb-3 ml-1">Diastolic</label>
-            <input
-              type="number"
-              name="diastolic"
-              value={formData.diastolic}
-              onChange={handleChange}
-              placeholder="80"
-              className="input-field"
-            />
+          <div className="space-y-3">
+            <label className="text-[10px] font-bold text-[#AAAAAA] uppercase tracking-widest ml-1">Diastolic</label>
+            <div className="relative">
+              <input
+                required
+                type="number"
+                placeholder="80"
+                value={formData.diastolic}
+                onChange={(e) => setFormData({ ...formData, diastolic: e.target.value })}
+                className="input-field text-xl font-extrabold pr-12"
+              />
+              <span className="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-bold text-[#CCCCCC]">DIA</span>
+            </div>
           </div>
         </div>
 
-        <div>
-          <label className="block text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] mb-3 ml-1">Pulse (Rate)</label>
-          <input
-            type="number"
-            name="pulse"
-            value={formData.pulse}
-            onChange={handleChange}
-            placeholder="72"
-            className="input-field"
-          />
+        {/* Pulse Input */}
+        <div className="space-y-3">
+          <label className="text-[10px] font-bold text-[#AAAAAA] uppercase tracking-widest ml-1">Heart Pulse</label>
+          <div className="relative">
+            <input
+              required
+              type="number"
+              placeholder="72"
+              value={formData.pulse}
+              onChange={(e) => setFormData({ ...formData, pulse: e.target.value })}
+              className="input-field text-xl font-extrabold pr-12"
+            />
+            <span className="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-bold text-[#CCCCCC]">BPM</span>
+          </div>
         </div>
 
-        {message.text && (
-          <div className={`p-4 text-[10px] font-black uppercase tracking-widest animate-modern-fade border ${
-            message.type === 'success' 
-              ? 'bg-white text-black border-white' 
-              : 'bg-black text-white border-white/20'
-          }`}>
-            {message.text}
-          </div>
-        )}
-
-        {formData.systolic && formData.diastolic && (
-          <div className="pt-2">
-            <StatusIndicator systolic={formData.systolic} diastolic={formData.diastolic} />
-          </div>
-        )}
-
+        {/* Submit */}
         <button
           type="submit"
           disabled={loading}
-          className="btn-primary w-full mt-6"
+          className="btn-primary w-full py-5 flex items-center justify-center gap-3 active:scale-95 transition-all text-base font-bold shadow-xl shadow-black/10"
         >
-          {loading ? 'Processing...' : 'Commit Reading'}
+          {loading ? 'Processing...' : lastSaved ? (
+            <>
+              <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+              Saved Successfully
+            </>
+          ) : 'Complete Entry'}
         </button>
       </form>
     </div>
