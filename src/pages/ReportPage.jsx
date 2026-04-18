@@ -1,15 +1,13 @@
 import { useState, useEffect } from 'react';
 import { pressureService } from '../services/api.js';
-import jsPDF from 'jspdf';
 import { getBPStatus } from '../utils/health.js';
-import 'jspdf-autotable';
-import { Download, ShieldCheck } from 'lucide-react';
+import { Download, ShieldCheck, Printer } from 'lucide-react';
 
 export const ReportPage = () => {
   const [readings, setReadings] = useState([]);
   const [stats, setStats] = useState({ systolic: 0, diastolic: 0, pulse: 0, count: 0 });
   const [loading, setLoading] = useState(true);
-  const DEPLOY_VERSION = 'v1.2.5-STABLE';
+  const DEPLOY_VERSION = 'v1.3.0-PRINT';
 
   useEffect(() => {
     const fetchData = async () => {
@@ -20,15 +18,16 @@ export const ReportPage = () => {
         
         if (data.length > 0) {
           const sums = data.reduce((acc, r) => ({
-            systolic: acc.systolic + r.systolic,
-            diastolic: acc.diastolic + r.diastolic,
-            pulse: acc.pulse + r.pulse
-          }), { systolic: 0, diastolic: 0, pulse: 0 });
+            systolic: acc.systolic + (r.systolic || 0),
+            diastolic: acc.diastolic + (r.diastolic || 0),
+            pulse: acc.pulse + (r.pulse || 0),
+            pulseCount: acc.pulseCount + (r.pulse ? 1 : 0)
+          }), { systolic: 0, diastolic: 0, pulse: 0, pulseCount: 0 });
           
           setStats({
             systolic: sums.systolic / data.length,
             diastolic: sums.diastolic / data.length,
-            pulse: sums.pulse / data.length,
+            pulse: sums.pulseCount > 0 ? sums.pulse / sums.pulseCount : null,
             count: data.length
           });
         }
@@ -50,73 +49,12 @@ export const ReportPage = () => {
 
   const aggregatedRows = Object.values(groupedReadings).sort((a, b) => b.date.localeCompare(a.date));
 
-  const generatePDF = () => {
-    try {
-      console.log('Initiating PDF generation...');
-      
-      if (typeof jsPDF !== 'function' && typeof jsPDF?.default !== 'function') {
-        throw new Error('PDF Library not loaded correctly');
-      }
-
-      const doc = new jsPDF();
-      
-      // Header
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(18);
-      doc.text('BLOOD PRESSURE REPORT', 14, 22);
-      
-      doc.setFontSize(9);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor(100);
-      doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 28);
-      
-      // Clinical Summary Table
-      const summaryBody = [
-        ['Avg Systolic', stats?.systolic ? `${Math.round(stats.systolic)} mmHg` : 'N/A'],
-        ['Avg Diastolic', stats?.diastolic ? `${Math.round(stats.diastolic)} mmHg` : 'N/A'],
-        ['Avg Pulse', stats?.pulse ? `${Math.round(stats.pulse)} BPM` : 'N/A']
-      ];
-
-      doc.autoTable({
-        startY: 35,
-        head: [['Metric', 'Clinical Value']],
-        body: summaryBody,
-        theme: 'grid',
-        headStyles: { fillColor: '#111111' },
-        styles: { fontSize: 8, cellPadding: 3 }
-      });
-
-      // Daily Matrix Table
-      const tableHeaders = [['Date', 'Morning (Sys/Dia)', 'Evening (Sys/Dia)', 'Night (Sys/Dia)']];
-      const tableBody = aggregatedRows.map(row => [
-        row.date ? new Date(row.date).toLocaleDateString() : 'Unknown Date',
-        row.Morning ? `${row.Morning.systolic}/${row.Morning.diastolic}` : '-',
-        row.Evening ? `${row.Evening.systolic}/${row.Evening.diastolic}` : '-',
-        row.Night ? `${row.Night.systolic}/${row.Night.diastolic}` : '-'
-      ]);
-
-      const lastY = doc.lastAutoTable ? doc.lastAutoTable.finalY : 70;
-
-      doc.autoTable({
-        startY: lastY + 10,
-        head: tableHeaders,
-        body: tableBody,
-        headStyles: { fillColor: '#111111' },
-        theme: 'grid',
-        styles: { fontSize: 8, cellPadding: 3 }
-      });
-
-      const fileName = `BP_Report_${new Date().toISOString().split('T')[0]}.pdf`;
-      doc.save(fileName);
-      console.log('PDF export successful:', fileName);
-    } catch (error) {
-      console.error('PDF Generation failed:', error);
-      alert('Unable to generate PDF. Please check your connection or data.');
-    }
+  const handlePrint = () => {
+     window.print();
   };
 
   const CompactReading = ({ reading }) => {
-    if (!reading) return <span className="text-[#F5F5F5] font-black tracking-widest text-[9px]">──</span>;
+    if (!reading) return <span className="text-[#F5F5F5] print:text-[#EEEEEE] font-black tracking-widest text-[9px]">──</span>;
     const status = getBPStatus(reading.systolic, reading.diastolic);
     const isSerious = status.key.includes('stage-2') || status.key.includes('crisis');
     
@@ -129,7 +67,7 @@ export const ReportPage = () => {
            <span className="text-[9px] font-bold text-[#999999] uppercase tracking-tight">
              {reading.pulse ? `${reading.pulse} BPM` : 'No Pulse'}
            </span>
-           <span className={`text-[7px] font-black px-1.5 py-0.5 rounded-full border ${status.badge} scale-90 origin-left`}>
+           <span className={`text-[7px] font-black px-1.5 py-0.5 rounded-full border ${status.badge} scale-90 origin-left print:border-black print:text-black`}>
               {status.label.split(' ')[0]}
            </span>
         </div>
@@ -142,45 +80,63 @@ export const ReportPage = () => {
   return (
     <div className="page-container page-transition">
       
-      <div className="header-section flex flex-col md:flex-row md:items-end justify-between gap-6">
+      {/* Header Section - Hidden during print except title */}
+      <div className="header-section flex flex-col md:flex-row md:items-end justify-between gap-6 print:mb-8">
         <div className="space-y-2.5">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#FAFAFA] border border-[#F1F1F1] rounded-full text-[10px] font-bold uppercase tracking-widest text-[#777777]">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#FAFAFA] border border-[#F1F1F1] rounded-full text-[10px] font-bold uppercase tracking-widest text-[#777777] print:hidden">
             <ShieldCheck className="w-3.5 h-3.5" />
             Authenticated Source
             <span className="ml-2 pl-2 border-l border-[#EEEEEE] text-[#BBBBBB]">{DEPLOY_VERSION}</span>
           </div>
-          <h1 className="page-title">
-            Daily <span className="text-[#DDDDDD]">Metrics.</span>
+          <h1 className="page-title print:text-2xl print:mb-2">
+            Clinical <span className="text-[#DDDDDD] print:text-[#777777]">Biometric Report.</span>
           </h1>
-          <p className="page-description">
-            Aggregated clinical summary for streamlined oversight of your biometric performance.
+          <p className="page-description print:text-xs">
+            Aggregated cardiovascular performance summary for professional clinical oversight.
+            <span className="hidden print:inline ml-2 text-[#999999]">| Generated on {new Date().toLocaleDateString()}</span>
           </p>
         </div>
 
         <button 
-          onClick={generatePDF}
-          className="btn-primary flex items-center gap-2.5 shadow-xl shadow-black/5 hover:-translate-y-0.5"
+          onClick={handlePrint}
+          className="btn-primary flex items-center gap-2.5 shadow-xl shadow-black/5 hover:-translate-y-0.5 print:hidden"
         >
-          <Download className="w-4 h-4" />
-          Export Report
+          <Printer className="w-4 h-4" />
+          Print Report
         </button>
       </div>
 
-      <div className="modern-card !p-0 overflow-hidden border-none shadow-sm">
+      {/* Stats Summary - Simplified for Print */}
+      <div className="grid grid-cols-3 gap-6 mb-8 hidden print:grid border-y border-[#EEEEEE] py-4">
+         <div>
+            <p className="text-[9px] font-black uppercase tracking-widest text-[#999999] mb-1">Avg Systolic</p>
+            <p className="text-xl font-black">{Math.round(stats.systolic)} <span className="text-[10px] text-[#BBBBBB]">mmHg</span></p>
+         </div>
+         <div>
+            <p className="text-[9px] font-black uppercase tracking-widest text-[#999999] mb-1">Avg Diastolic</p>
+            <p className="text-xl font-black">{Math.round(stats.diastolic)} <span className="text-[10px] text-[#BBBBBB]">mmHg</span></p>
+         </div>
+         <div>
+            <p className="text-[9px] font-black uppercase tracking-widest text-[#999999] mb-1">Avg Pulse</p>
+            <p className="text-xl font-black">{stats.pulse ? Math.round(stats.pulse) : '--'} <span className="text-[10px] text-[#BBBBBB]">BPM</span></p>
+         </div>
+      </div>
+
+      <div className="modern-card !p-0 overflow-hidden border-[#F1F1F1] print:border-none print:shadow-none">
         <div className="overflow-x-auto">
           <table className="w-full text-left table-fixed">
-            <thead className="bg-[#FAFAFA] border-b border-[#F1F1F1]">
+            <thead className="bg-[#FAFAFA] border-b border-[#F1F1F1] print:bg-white print:border-b-2 print:border-black">
               <tr>
-                <th className="px-6 py-4 text-[10px] font-black text-[#AAAAAA] uppercase tracking-[0.2em] w-1/4">Biometric Date</th>
-                <th className="px-6 py-4 text-[10px] font-black text-[#AAAAAA] uppercase tracking-[0.2em] w-1/4">Morning</th>
-                <th className="px-6 py-4 text-[10px] font-black text-[#AAAAAA] uppercase tracking-[0.2em] w-1/4">Evening</th>
-                <th className="px-6 py-4 text-[10px] font-black text-[#AAAAAA] uppercase tracking-[0.2em] w-1/4">Night</th>
+                <th className="px-6 py-4 text-[10px] font-black text-[#AAAAAA] print:text-black uppercase tracking-[0.2em] w-1/4">Date</th>
+                <th className="px-6 py-4 text-[10px] font-black text-[#AAAAAA] print:text-black uppercase tracking-[0.2em] w-1/4">Morning</th>
+                <th className="px-6 py-4 text-[10px] font-black text-[#AAAAAA] print:text-black uppercase tracking-[0.2em] w-1/4">Evening</th>
+                <th className="px-6 py-4 text-[10px] font-black text-[#AAAAAA] print:text-black uppercase tracking-[0.2em] w-1/4">Night</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#F1F1F1]">
+            <tbody className="divide-y divide-[#F1F1F1] print:divide-black">
               {aggregatedRows.length > 0 ? (
                 aggregatedRows.map(row => (
-                  <tr key={row.date} className="hover:bg-[#FCFCFC] transition-colors group">
+                  <tr key={row.date} className="hover:bg-[#FCFCFC] transition-colors group print:break-inside-avoid">
                     <td className="px-6 py-5">
                        <p className="font-black text-[13px] text-[#111111]">{new Date(row.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</p>
                        <p className="text-[9px] font-extrabold text-[#777777] uppercase tracking-widest mt-0.5">{new Date(row.date).toLocaleDateString(undefined, { weekday: 'long' })}</p>
@@ -193,13 +149,20 @@ export const ReportPage = () => {
               ) : (
                 <tr>
                   <td colSpan="4" className="px-6 py-20 text-center text-[10px] font-black text-[#CCCCCC] uppercase tracking-widest">
-                    Empty cloud ledger
+                    Empty clinical ledger
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
         </div>
+      </div>
+
+      {/* Print Footer */}
+      <div className="hidden print:block mt-12 pt-8 border-t border-[#EEEEEE]">
+         <p className="text-[10px] font-medium text-[#AAAAAA] italic text-center">
+            This report is a digital synthesis of recorded biometric data. Please consult with a medical professional for clinical diagnosis.
+         </p>
       </div>
     </div>
   );

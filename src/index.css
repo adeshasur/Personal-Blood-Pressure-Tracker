@@ -73,6 +73,30 @@
   @apply bg-[#EEEEEE] rounded-full hover:bg-[#DDDDDD];
 }
 
+/* Print Overrides */
+@media print {
+  nav, .no-print, button {
+    display: none !important;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .page-container {
+    padding: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+
+  .modern-card {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+}
+
 /* Smooth Navigation Glow */
 .nav-active {
   @apply bg-[#111111] text-white shadow-lg shadow-black/10;
