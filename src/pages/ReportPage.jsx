@@ -50,47 +50,63 @@ export const ReportPage = () => {
   const aggregatedRows = Object.values(groupedReadings).sort((a, b) => b.date.localeCompare(a.date));
 
   const generatePDF = () => {
-     const doc = new jsPDF();
-     doc.setFont('helvetica', 'bold');
-     doc.setFontSize(18);
-     doc.text('BLOOD PRESSURE REPORT', 14, 22);
-     
-     doc.setFontSize(9);
-     doc.setFont('helvetica', 'normal');
-     doc.setTextColor(100);
-     doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 28);
-     
-     doc.autoTable({
-       startY: 35,
-       head: [['Metric', 'Clinical Average']],
-       body: [
-         ['Avg Systolic', `${Math.round(stats.systolic)} mmHg`],
-         ['Avg Diastolic', `${Math.round(stats.diastolic)} mmHg`],
-         ['Avg Pulse', `${Math.round(stats.pulse)} BPM`]
-       ],
-       theme: 'grid',
-       headStyles: { fillColor: '#111111' },
-       styles: { fontSize: 8 }
-     });
+    try {
+      console.log('Initiating PDF generation...');
+      const doc = new jsPDF();
+      
+      // Header
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(18);
+      doc.text('BLOOD PRESSURE REPORT', 14, 22);
+      
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(100);
+      doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 28);
+      
+      // Clinical Summary Table
+      const summaryBody = [
+        ['Avg Systolic', stats?.systolic ? `${Math.round(stats.systolic)} mmHg` : 'N/A'],
+        ['Avg Diastolic', stats?.diastolic ? `${Math.round(stats.diastolic)} mmHg` : 'N/A'],
+        ['Avg Pulse', stats?.pulse ? `${Math.round(stats.pulse)} BPM` : 'N/A']
+      ];
 
-     const tableHeaders = [['Date', 'Morning', 'Evening', 'Night']];
-     const tableBody = aggregatedRows.map(row => [
-       new Date(row.date).toLocaleDateString(),
-       row.Morning ? `${row.Morning.systolic}/${row.Morning.diastolic}` : '-',
-       row.Evening ? `${row.Evening.systolic}/${row.Evening.diastolic}` : '-',
-       row.Night ? `${row.Night.systolic}/${row.Night.diastolic}` : '-'
-     ]);
+      doc.autoTable({
+        startY: 35,
+        head: [['Metric', 'Clinical Value']],
+        body: summaryBody,
+        theme: 'grid',
+        headStyles: { fillColor: '#111111' },
+        styles: { fontSize: 8, cellPadding: 3 }
+      });
 
-     doc.autoTable({
-       startY: doc.lastAutoTable.finalY + 10,
-       head: tableHeaders,
-       body: tableBody,
-       headStyles: { fillColor: '#111111' },
-       theme: 'grid',
-       styles: { fontSize: 8 }
-     });
+      // Daily Matrix Table
+      const tableHeaders = [['Date', 'Morning (Sys/Dia)', 'Evening (Sys/Dia)', 'Night (Sys/Dia)']];
+      const tableBody = aggregatedRows.map(row => [
+        row.date ? new Date(row.date).toLocaleDateString() : 'Unknown Date',
+        row.Morning ? `${row.Morning.systolic}/${row.Morning.diastolic}` : '-',
+        row.Evening ? `${row.Evening.systolic}/${row.Evening.diastolic}` : '-',
+        row.Night ? `${row.Night.systolic}/${row.Night.diastolic}` : '-'
+      ]);
 
-     doc.save(`BP_Report_${new Date().toISOString().split('T')[0]}.pdf`);
+      const lastY = doc.lastAutoTable ? doc.lastAutoTable.finalY : 70;
+
+      doc.autoTable({
+        startY: lastY + 10,
+        head: tableHeaders,
+        body: tableBody,
+        headStyles: { fillColor: '#111111' },
+        theme: 'grid',
+        styles: { fontSize: 8, cellPadding: 3 }
+      });
+
+      const fileName = `BP_Report_${new Date().toISOString().split('T')[0]}.pdf`;
+      doc.save(fileName);
+      console.log('PDF export successful:', fileName);
+    } catch (error) {
+      console.error('PDF Generation failed:', error);
+      alert('Unable to generate PDF. Please check your connection or data.');
+    }
   };
 
   const CompactReading = ({ reading }) => {
