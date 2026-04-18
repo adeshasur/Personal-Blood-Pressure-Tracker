@@ -20,61 +20,69 @@
 }
 
 @layer components {
-  /* Minimalist Rounded Cards */
+  /* Refined Rounded Cards */
   .modern-card {
-    @apply bg-white border border-[#F1F1F1] rounded-[24px] p-6 transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)];
+    @apply bg-white border border-[#F1F1F1] rounded-[20px] p-5 transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.03)];
   }
 
-  /* High Contrast Minimal Buttons */
+  /* Elegant High Contrast Buttons */
   .btn-primary {
-    @apply px-8 py-3.5 bg-[#111111] text-white font-semibold rounded-full 
-           hover:bg-[#333333] transition-all duration-300 active:scale-95 disabled:opacity-50
-           text-sm tracking-tight;
+    @apply px-7 py-3 bg-[#111111] text-white font-bold rounded-full 
+           hover:bg-[#222222] transition-all duration-300 active:scale-95 disabled:opacity-50
+           text-[13px] uppercase tracking-wider;
   }
 
   .btn-secondary {
-    @apply px-8 py-3.5 bg-white text-[#111111] border border-[#EEEEEE] font-semibold rounded-full
-           hover:bg-[#FAFAFA] transition-all duration-300 active:scale-95 text-sm tracking-tight;
+    @apply px-7 py-3 bg-white text-[#111111] border border-[#EEEEEE] font-bold rounded-full
+           hover:bg-[#FAFAFA] transition-all duration-300 active:scale-95 text-[13px] uppercase tracking-wider;
   }
 
-  /* Soft Input Fields */
+  /* Refined Input Fields */
   .input-field {
-    @apply w-full px-6 py-4 bg-[#FAFAFA] border border-[#F1F1F1] rounded-2xl
+    @apply w-full px-5 py-3.5 bg-[#FAFAFA] border border-[#F1F1F1] rounded-xl
            focus:border-[#111111] focus:bg-white focus:outline-none focus:ring-0
-           text-[#111111] placeholder-[#AAAAAA] transition-all duration-300;
+           text-[#111111] placeholder-[#AAAAAA] transition-all duration-300 text-sm;
   }
 
-  /* Minimal Category Selectors */
-  .category-btn {
-    @apply w-full text-center px-4 py-3.5 rounded-xl border border-[#F1F1F1] font-semibold text-sm transition-all duration-300;
+  /* Standardized Page Layout */
+  .page-container {
+    @apply max-w-6xl mx-auto px-6 py-12;
   }
 
-  .category-btn.active {
-    @apply bg-[#111111] text-white border-[#111111];
+  .header-section {
+    @apply mb-12;
   }
 
-  .category-btn:not(.active) {
-    @apply bg-white hover:bg-[#FAFAFA];
+  .page-title {
+    @apply text-4xl md:text-5xl font-extrabold tracking-tighter text-[#111111] leading-[1.1] mb-3;
+  }
+
+  .page-description {
+    @apply text-[#777777] font-medium tracking-tight max-w-lg text-base;
   }
 }
 
 /* Custom Minimal Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 ::-webkit-scrollbar-track {
   @apply bg-transparent;
 }
 ::-webkit-scrollbar-thumb {
-  @apply bg-[#EEEEEE] rounded-full hover:bg-[#DDDDDD] transition-all;
+  @apply bg-[#EEEEEE] rounded-full hover:bg-[#DDDDDD];
 }
 
-/* Smooth Page In Transition */
+/* Smooth Navigation Glow */
+.nav-active {
+  @apply bg-[#111111] text-white shadow-lg shadow-black/10;
+}
+
 .page-transition {
-  animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }

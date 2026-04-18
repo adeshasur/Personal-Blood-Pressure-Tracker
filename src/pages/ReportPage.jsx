@@ -40,11 +40,10 @@ export const ReportPage = () => {
     fetchData();
   }, []);
 
-  // Group readings by date for the aggregated table view
   const groupedReadings = readings.reduce((acc, curr) => {
     const date = curr.date || curr.created_at?.split('T')[0];
     if (!acc[date]) acc[date] = { date, Morning: null, Evening: null, Night: null };
-    acc[date][curr.category] = curr;
+    acc[date][curr.category || 'Morning'] = curr;
     return acc;
   }, {});
 
@@ -53,25 +52,25 @@ export const ReportPage = () => {
   const generatePDF = () => {
      const doc = new jsPDF();
      doc.setFont('helvetica', 'bold');
-     doc.setFontSize(22);
+     doc.setFontSize(18);
      doc.text('BLOOD PRESSURE REPORT', 14, 22);
      
-     doc.setFontSize(10);
+     doc.setFontSize(9);
      doc.setFont('helvetica', 'normal');
      doc.setTextColor(100);
-     doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 30);
-     doc.text(`Total Records: ${stats.count}`, 14, 35);
+     doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 28);
      
      doc.autoTable({
-       startY: 45,
-       head: [['Summary Metrics', 'Average']],
+       startY: 35,
+       head: [['Metric', 'Clinical Average']],
        body: [
-         ['Average Systolic', `${Math.round(stats.systolic)} mmHg`],
-         ['Average Diastolic', `${Math.round(stats.diastolic)} mmHg`],
-         ['Average Pulse', `${Math.round(stats.pulse)} BPM`]
+         ['Avg Systolic', `${Math.round(stats.systolic)} mmHg`],
+         ['Avg Diastolic', `${Math.round(stats.diastolic)} mmHg`],
+         ['Avg Pulse', `${Math.round(stats.pulse)} BPM`]
        ],
        theme: 'grid',
-       headStyles: { fillColor: '#111111' }
+       headStyles: { fillColor: '#111111' },
+       styles: { fontSize: 8 }
      });
 
      const tableHeaders = [['Date', 'Morning', 'Evening', 'Night']];
@@ -83,29 +82,30 @@ export const ReportPage = () => {
      ]);
 
      doc.autoTable({
-       startY: doc.lastAutoTable.finalY + 15,
+       startY: doc.lastAutoTable.finalY + 10,
        head: tableHeaders,
        body: tableBody,
        headStyles: { fillColor: '#111111' },
-       theme: 'grid'
+       theme: 'grid',
+       styles: { fontSize: 8 }
      });
 
      doc.save(`BP_Report_${new Date().toISOString().split('T')[0]}.pdf`);
   };
 
   const CompactReading = ({ reading }) => {
-    if (!reading) return <span className="text-[#F0F0F0] font-black tracking-widest text-[10px]">──</span>;
+    if (!reading) return <span className="text-[#F5F5F5] font-black tracking-widest text-[9px]">──</span>;
     const status = getBPStatus(reading.systolic, reading.diastolic);
     const isSerious = status.key.includes('stage-2') || status.key.includes('crisis');
     
     return (
       <div className="flex flex-col">
-        <span className={`font-black text-xl tracking-tighter ${isSerious ? 'text-red-600' : 'text-[#111111]'}`}>
+        <span className={`font-black text-lg tracking-tighter ${isSerious ? 'text-red-600' : 'text-[#111111]'}`}>
           {reading.systolic}<span className="text-[#DDDDDD] font-light mx-0.5">/</span>{reading.diastolic}
         </span>
         <div className="flex items-center gap-1.5 mt-0.5">
-           <span className="text-[10px] font-black text-[#888888] uppercase tracking-tight">{reading.pulse} BPM</span>
-           <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded-full border ${status.badge} leading-none scale-90 origin-left`}>
+           <span className="text-[9px] font-bold text-[#999999] uppercase tracking-tight">{reading.pulse} BPM</span>
+           <span className={`text-[7px] font-black px-1.5 py-0.5 rounded-full border ${status.badge} scale-90 origin-left`}>
               {status.label.split(' ')[0]}
            </span>
         </div>
@@ -113,64 +113,62 @@ export const ReportPage = () => {
     );
   };
 
-  if (loading) return <div className="max-w-6xl mx-auto px-6 py-24 text-center">Loading Data Source...</div>;
+  if (loading) return <div className="page-container text-center py-24 text-[10px] font-black text-[#DDDDDD] uppercase tracking-[0.2em]">Syncing Clinical Ledger...</div>;
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-16">
+    <div className="page-container page-transition">
       
-      {/* Unified Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-20 text-left">
-        <div className="space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#FAFAFA] border border-[#F1F1F1] rounded-full text-[10px] font-black uppercase tracking-widest text-[#999999]">
+      <div className="header-section flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="space-y-2.5">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#FAFAFA] border border-[#F1F1F1] rounded-full text-[10px] font-bold uppercase tracking-widest text-[#777777]">
             <ShieldCheck className="w-3.5 h-3.5" />
-            Cloud Database
+            Authenticated Source
           </div>
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter text-[#111111] leading-[0.9]">
+          <h1 className="page-title">
             Daily <span className="text-[#DDDDDD]">Metrics.</span>
           </h1>
-          <p className="text-[#888888] font-medium tracking-tight max-w-lg text-lg">
-            Aggregated clinical summary for streamlined oversight of your biometric performance across devices.
+          <p className="page-description">
+            Aggregated clinical summary for streamlined oversight of your biometric performance.
           </p>
         </div>
 
         <button 
           onClick={generatePDF}
-          className="btn-primary flex items-center gap-3 px-10 py-5 shadow-2xl shadow-black/10 active:scale-95 transition-all text-sm font-black uppercase tracking-widest"
+          className="btn-primary flex items-center gap-2.5 shadow-xl shadow-black/5 hover:-translate-y-0.5"
         >
-          <Download className="w-5 h-5 text-white" />
+          <Download className="w-4 h-4" />
           Export Report
         </button>
       </div>
 
-      {/* Main Table Matrix */}
-      <div className="modern-card !p-0 overflow-hidden shadow-sm border-none bg-white">
+      <div className="modern-card !p-0 overflow-hidden border-none shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left table-fixed">
             <thead className="bg-[#FAFAFA] border-b border-[#F1F1F1]">
               <tr>
-                <th className="px-8 py-6 text-[11px] font-black text-[#AAAAAA] uppercase tracking-[0.25em] w-1/4">Biometric Date</th>
-                <th className="px-8 py-6 text-[11px] font-black text-[#AAAAAA] uppercase tracking-[0.25em] w-1/4">Morning</th>
-                <th className="px-8 py-6 text-[11px] font-black text-[#AAAAAA] uppercase tracking-[0.25em] w-1/4">Evening</th>
-                <th className="px-8 py-6 text-[11px] font-black text-[#AAAAAA] uppercase tracking-[0.25em] w-1/4">Night</th>
+                <th className="px-6 py-4 text-[10px] font-black text-[#AAAAAA] uppercase tracking-[0.2em] w-1/4">Biometric Date</th>
+                <th className="px-6 py-4 text-[10px] font-black text-[#AAAAAA] uppercase tracking-[0.2em] w-1/4">Morning</th>
+                <th className="px-6 py-4 text-[10px] font-black text-[#AAAAAA] uppercase tracking-[0.2em] w-1/4">Evening</th>
+                <th className="px-6 py-4 text-[10px] font-black text-[#AAAAAA] uppercase tracking-[0.2em] w-1/4">Night</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#F1F1F1]">
               {aggregatedRows.length > 0 ? (
                 aggregatedRows.map(row => (
                   <tr key={row.date} className="hover:bg-[#FCFCFC] transition-colors group">
-                    <td className="px-8 py-8">
-                       <p className="font-black text-sm text-[#111111]">{new Date(row.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</p>
-                       <p className="text-[10px] font-extrabold text-[#777777] uppercase tracking-widest mt-1">{new Date(row.date).toLocaleDateString(undefined, { weekday: 'long' })}</p>
+                    <td className="px-6 py-5">
+                       <p className="font-black text-[13px] text-[#111111]">{new Date(row.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                       <p className="text-[9px] font-extrabold text-[#777777] uppercase tracking-widest mt-0.5">{new Date(row.date).toLocaleDateString(undefined, { weekday: 'long' })}</p>
                     </td>
-                    <td className="px-8 py-8"><CompactReading reading={row.Morning} /></td>
-                    <td className="px-8 py-8"><CompactReading reading={row.Evening} /></td>
-                    <td className="px-8 py-8"><CompactReading reading={row.Night} /></td>
+                    <td className="px-6 py-5"><CompactReading reading={row.Morning} /></td>
+                    <td className="px-6 py-5"><CompactReading reading={row.Evening} /></td>
+                    <td className="px-6 py-5"><CompactReading reading={row.Night} /></td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="4" className="px-8 py-20 text-center text-[10px] font-black text-[#CCCCCC] uppercase tracking-widest">
-                    No historical records discovered in cloud storage
+                  <td colSpan="4" className="px-6 py-20 text-center text-[10px] font-black text-[#CCCCCC] uppercase tracking-widest">
+                    Empty cloud ledger
                   </td>
                 </tr>
               )}

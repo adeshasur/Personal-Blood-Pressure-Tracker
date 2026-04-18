@@ -41,8 +41,8 @@ export const LogForm = ({ onReadingsUpdate }) => {
   ];
 
   return (
-    <div className="modern-card shadow-[0_20px_60px_rgb(0,0,0,0.04)] border-none">
-      <form onSubmit={handleSubmit} className="space-y-10">
+    <div className="modern-card !p-0 overflow-hidden mb-6 border-none shadow-sm">
+      <div className="flex items-center gap-4 px-6 py-5 bg-[#FAFAFA] border-b border-[#F1F1F1]">
         
         {/* Category Selector */}
         <div className="space-y-4">

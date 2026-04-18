@@ -1,78 +1,59 @@
-import { Heart, Activity, Clock } from 'lucide-react';
-import { getBPStatus } from '../utils/health.js';
+import { getBPStatus } from '../utils/health';
 
-export const StatusIndicator = ({ systolic, diastolic }) => {
-  const status = getBPStatus(systolic, diastolic);
-
-  return (
-    <div className={`inline-flex items-center px-4 py-1.5 rounded-full border text-[10px] font-black uppercase tracking-widest ${status.badge} shadow-sm transition-all duration-300`}>
-      {status.label}
+export const StatBox = ({ label, value, unit, icon: Icon }) => (
+  <div className="modern-card">
+    <div className="flex items-center gap-2.5 mb-3">
+      <div className="w-8 h-8 rounded-lg bg-[#FAFAFA] flex items-center justify-center border border-[#F1F1F1]">
+        <Icon className="w-4 h-4 text-[#111111]" />
+      </div>
+      <span className="text-[10px] font-black text-[#BBBBBB] uppercase tracking-[0.2em]">{label}</span>
     </div>
-  );
-};
+    <div className="flex items-baseline gap-1.5">
+      <span className="text-3xl font-black text-[#111111] tracking-tighter">
+        {typeof value === 'number' ? Math.round(value) : '--'}
+      </span>
+      <span className="text-[10px] font-black text-[#DDDDDD] uppercase tracking-widest">{unit}</span>
+    </div>
+  </div>
+);
 
-export const ReadingCard = ({ reading }) => {
+export const HistoryItem = ({ reading }) => {
   const status = getBPStatus(reading.systolic, reading.diastolic);
   
   return (
-    <div className={`modern-card ${status.color.replace('bg-', 'bg-opacity-30 bg-')}`}>
-      <div className="flex items-start justify-between mb-8">
-        <div className="space-y-4">
-          <div className="flex items-center gap-3 text-[#999999]">
-            <div className="p-1 px-3 bg-white rounded-lg text-[10px] font-black uppercase tracking-widest border border-[#F1F1F1] text-[#111111]">
-              {reading.category}
-            </div>
-            <span className="text-[11px] font-bold opacity-60">
-              {new Date(reading.date || reading.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
-            </span>
-          </div>
-          <div className="flex items-baseline gap-1.5">
-            <span className="text-6xl font-extrabold text-[#111111] tracking-tighter">
-              {reading.systolic}
-              <span className="text-[#DDDDDD] mx-1 font-light">/</span>
-              {reading.diastolic}
-            </span>
-            <span className="text-[12px] font-black text-[#AAAAAA] ml-1 uppercase leading-none">mmHg</span>
-          </div>
+    <div className="flex items-center gap-4 p-4 bg-white border border-[#F1F1F1] rounded-2xl hover:border-[#111111] transition-all group">
+      <div className="flex-1">
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-[10px] font-black text-[#111111] uppercase tracking-[0.2em]">
+            {reading.category}
+          </span>
+          <span className="text-[8px] font-bold text-[#CCCCCC] uppercase tracking-widest">
+            {new Date(reading.date).toLocaleDateString(undefined, { weekday: 'short' })}
+          </span>
         </div>
-        <StatusIndicator systolic={reading.systolic} diastolic={reading.diastolic} />
+        <div className="flex items-baseline gap-2">
+          <span className="text-xl font-black text-[#111111] tracking-tighter">
+            {reading.systolic}<span className="text-[#DDDDDD] font-light mx-0.5">/</span>{reading.diastolic}
+          </span>
+          <span className="text-[9px] font-bold text-[#888888] uppercase tracking-widest">
+            {reading.pulse} BPM
+          </span>
+        </div>
       </div>
-      
-      <div className="flex items-center justify-between pt-7 border-t border-[#F1F1F1]">
-        <div className="flex items-center gap-3">
-          <div className="p-2.5 bg-white rounded-2xl text-[#111111] border border-[#F1F1F1] shadow-sm">
-            <Heart className="w-4 h-4 fill-rose-500 text-rose-500 transition-transform duration-500 group-hover:scale-110" />
-          </div>
-          <div>
-            <p className="text-xl font-black text-[#111111] leading-none tracking-tighter">{reading.pulse}</p>
-            <p className="text-[9px] text-[#999999] font-black uppercase tracking-[0.15em] mt-1">Pulse BPM</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-1.5 opacity-30 text-[#111111]">
-           <Clock className="w-4 h-4" />
-           <span className="text-[10px] font-black tracking-widest">RECORDED</span>
-        </div>
+      <div className={`px-2.5 py-1 rounded-full text-[8px] font-black uppercase tracking-widest border ${status.badge}`}>
+        {status.label.split(' ')[0]}
       </div>
     </div>
   );
 };
 
-export const StatBox = ({ label, value, unit, icon: Icon }) => {
+export const StatusIndicator = ({ systolic, diastolic }) => {
+  const status = getBPStatus(systolic, diastolic);
+  
   return (
-    <div className="modern-card group border-none shadow-[0_4px_25px_rgb(0,0,0,0.02)] hover:shadow-[0_15px_50px_rgb(0,0,0,0.06)] bg-[#FAFAFA] transition-all duration-500">
-      <div className="flex items-center justify-between mb-6">
-        <div className="p-4 bg-white rounded-2xl text-[#111111] border border-[#EEEEEE] transition-all duration-500 group-hover:scale-105 group-hover:shadow-lg group-hover:shadow-black/5">
-          {Icon ? <Icon className="w-6 h-6" /> : <Activity className="w-6 h-6" />}
-        </div>
-        <span className="text-[9px] font-black text-[#999999] bg-white px-3 py-1.5 rounded-full border border-[#F1F1F1] tracking-widest uppercase">DAILY AVG</span>
-      </div>
-      <div>
-        <p className="text-[11px] font-black text-[#999999] uppercase tracking-[0.2em] mb-3">{label}</p>
-        <div className="flex items-baseline gap-2">
-          <span className="text-5xl font-black text-[#111111] tracking-tighter">{Math.round(value || 0)}</span>
-          <span className="text-[13px] font-black text-[#BBBBBB] uppercase tracking-tighter">{unit}</span>
-        </div>
-      </div>
+    <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border ${status.badge}`}>
+      <div className={`w-1.5 h-1.5 rounded-full ${status.dot}`} />
+      <span className="text-[10px] font-black uppercase tracking-widest">{status.label}</span>
     </div>
   );
 };
