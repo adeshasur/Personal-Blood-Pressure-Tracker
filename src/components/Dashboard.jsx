@@ -55,7 +55,7 @@ export const Dashboard = () => {
           </div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-2 gap-4 sm:gap-6">
           <StatBox
             label="Avg Systolic"
             value={avgSystolic}
@@ -81,7 +81,7 @@ export const Dashboard = () => {
           <p className="text-xl font-black text-[#111111] tracking-tight">Frequency Compliance</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {[
             { label: 'Morning', time: '08:30 AM', reading: morningReading },
             { label: 'Evening', time: '18:30 PM', reading: eveningReading },

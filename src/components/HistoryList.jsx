@@ -23,44 +23,44 @@ const SlotRow = ({ slot, reading, onDelete }) => {
 
   if (isEmpty) {
     return (
-      <div className="flex items-center gap-4 px-6 py-4 border-b border-[#F5F5F5] last:border-0 opacity-50">
-        <div className="w-1.5 h-1.5 rounded-full bg-[#EEEEEE]" />
-        <span className="text-[11px] font-bold text-[#999999] uppercase tracking-wider w-20">
+      <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-4 px-4 sm:px-6 py-3 sm:py-4 border-b border-[#F5F5F5] last:border-0 opacity-50">
+        <div className="w-1.5 h-1.5 rounded-full bg-[#EEEEEE] hidden sm:block" />
+        <span className="text-[10px] sm:text-[11px] font-bold text-[#999999] uppercase tracking-wider w-auto sm:w-20">
           {slot.category}
         </span>
         <div className="flex items-center gap-2 flex-1">
-          <span className="text-[10px] font-bold text-[#EEEEEE] uppercase tracking-[0.2em]">
+          <span className="text-[9px] sm:text-[10px] font-bold text-[#EEEEEE] uppercase tracking-[0.2em]">
             No Record
           </span>
         </div>
-        <span className="text-[10px] font-bold text-[#EEEEEE] tracking-tight">{slot.time}</span>
+        <span className="text-[9px] sm:text-[10px] font-bold text-[#EEEEEE] tracking-tight">{slot.time}</span>
       </div>
     );
   }
 
   return (
-    <div className={`group flex items-center gap-4 px-6 py-4 border-b border-[#F5F5F5] last:border-0 transition-all`}>
-      <div className={`w-1.5 h-1.5 rounded-full ${status.dot}`} />
+    <div className={`group flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-4 px-4 sm:px-6 py-3 sm:py-4 border-b border-[#F5F5F5] last:border-0 transition-all`}>
+      <div className={`w-1.5 h-1.5 rounded-full ${status.dot} hidden sm:block`} />
       
-      <span className="text-[11px] font-bold text-[#999999] uppercase tracking-wider w-20">
+      <span className="text-[10px] sm:text-[11px] font-bold text-[#999999] uppercase tracking-wider w-auto sm:w-16 md:w-20">
         {slot.category}
       </span>
 
-      <div className="flex items-baseline gap-1.5 flex-1">
-        <span className={`text-2xl font-extrabold tracking-tighter text-[#111111]`}>
+      <div className="flex items-baseline gap-1 sm:gap-1.5 flex-1">
+        <span className={`text-xl sm:text-2xl font-extrabold tracking-tighter text-[#111111]`}>
           {reading.systolic}
           <span className="text-[#DDDDDD] mx-0.5 font-light">/</span>
           {reading.diastolic}
         </span>
-        <span className="text-[10px] font-bold text-[#BBBBBB] uppercase">mmHg</span>
+        <span className="text-[9px] sm:text-[10px] font-bold text-[#BBBBBB] uppercase">mmHg</span>
       </div>
 
-      <div className="flex items-center gap-6">
-        <span className={`text-[9px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full ${status.badge} w-32 text-center shadow-sm`}>
+      <div className="flex items-center gap-2 sm:gap-6">
+        <span className={`text-[8px] sm:text-[9px] font-extrabold uppercase tracking-widest px-2 py-1 sm:px-2.5 sm:py-1 rounded-full ${status.badge} w-24 sm:w-32 text-center shadow-sm`}>
           {status.label}
         </span>
 
-        <div className="opacity-0 group-hover:opacity-100 transition-all">
+        <div className="opacity-100 sm:opacity-0 group-hover:opacity-100 transition-all">
           <button
             onClick={() => onDelete(reading.id)}
             className="p-2 rounded-xl bg-white hover:bg-black text-[#CCCCCC] hover:text-white border border-[#F1F1F1] hover:border-black transition-all shadow-sm"
@@ -82,15 +82,15 @@ const DayBlock = ({ dateStr, readings, onDelete }) => {
 
   return (
     <div className="modern-card !p-0 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-500">
-      <div className="flex items-center gap-4 px-6 py-5 border-b border-[#F1F1F1] bg-[#FAFAFA]/50">
-        <div className="p-2.5 bg-white border border-[#F1F1F1] rounded-2xl shadow-sm text-[#111111]">
-          <CalendarDays className="w-5 h-5" />
+      <div className="flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-4 sm:py-5 border-b border-[#F1F1F1] bg-[#FAFAFA]/50">
+        <div className="p-2 sm:p-2.5 bg-white border border-[#F1F1F1] rounded-2xl shadow-sm text-[#111111]">
+          <CalendarDays className="w-4 h-4 sm:w-5 sm:h-5" />
         </div>
         <div>
-          <p className="text-base font-extrabold text-[#111111] tracking-tight">{day}</p>
-          <p className="text-[10px] font-bold text-[#777777] uppercase tracking-widest">{week}</p>
+          <p className="text-sm sm:text-base font-extrabold text-[#111111] tracking-tight">{day}</p>
+          <p className="text-[9px] sm:text-[10px] font-bold text-[#777777] uppercase tracking-widest">{week}</p>
         </div>
-        <div className="ml-auto text-[10px] font-black text-[#BBBBBB] uppercase tracking-[0.2em] bg-white px-3 py-1.5 rounded-full border border-[#F1F1F1]">
+        <div className="ml-auto text-[9px] sm:text-[10px] font-black text-[#BBBBBB] uppercase tracking-[0.2em] bg-white px-2 sm:px-3 py-1 sm:py-1.5 rounded-full border border-[#F1F1F1]">
           {readings.length}/3
         </div>
       </div>
