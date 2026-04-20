@@ -28,7 +28,7 @@ function App() {
       <div className="min-h-screen bg-white">
         {/* Minimal Navigation */}
         <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#F1F1F1]">
-          <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="max-w-[1400px] w-full mx-auto px-8 py-4 flex items-center justify-between">
             
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2.5 group">

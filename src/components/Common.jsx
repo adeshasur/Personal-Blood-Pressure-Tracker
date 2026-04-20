@@ -35,9 +35,6 @@ export const HistoryItem = ({ reading }) => {
           <span className="text-xl font-black text-[#111111] tracking-tighter">
             {reading.systolic}<span className="text-[#DDDDDD] font-light mx-0.5">/</span>{reading.diastolic}
           </span>
-          <span className="text-[9px] font-bold text-[#888888] uppercase tracking-widest">
-            {reading.pulse ? `${reading.pulse} BPM` : 'No Pulse'}
-          </span>
         </div>
       </div>
       <div className={`px-2.5 py-1 rounded-full text-[8px] font-black uppercase tracking-widest border ${status.badge}`}>

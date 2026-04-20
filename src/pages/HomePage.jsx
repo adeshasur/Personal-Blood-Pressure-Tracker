@@ -3,7 +3,6 @@ import { pressureService } from '../services/api.js';
 import { 
   Activity, 
   TrendingUp, 
-  Heart, 
   BarChart3, 
   Calendar, 
   ChevronRight 
@@ -17,36 +16,46 @@ import {
   Tooltip, 
   ResponsiveContainer 
 } from 'recharts';
-import { StatBox, HistoryItem } from '../components/Common';
+import { StatBox, HistoryItem } from '../components/Common.jsx';
 
 export const HomePage = () => {
   const [stats, setStats] = useState([]);
   const [latestReadings, setLatestReadings] = useState([]);
+  const [todayAvg, setTodayAvg] = useState({ avg_systolic: 0, avg_diastolic: 0 });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const loadDashboard = async () => {
       try {
-        const statsRes = await pressureService.getDashboardStats();
-        const latestRes = await pressureService.getLatestReadings();
+        const [statsRes, latestRes] = await Promise.all([
+          pressureService.getDashboardStats(),
+          pressureService.getReadings(5)
+        ]);
+        
         setStats(statsRes.data);
         setLatestReadings(latestRes.data);
+        
+        if (statsRes.data.length > 0) {
+          setTodayAvg(statsRes.data[statsRes.data.length - 1]);
+        }
       } catch (err) {
-        console.error('Data fetch failed:', err);
+        console.error('Dashboard load failed:', err);
+      } finally {
+        setLoading(false);
       }
     };
-    fetchData();
+    loadDashboard();
   }, []);
 
-  const todayAvg = stats.length > 0 ? stats[stats.length - 1] : { avg_systolic: 0, avg_diastolic: 0, avg_pulse: 0 };
+  if (loading) return <div className="page-container text-center py-24 text-[10px] font-black text-[#DDDDDD] uppercase tracking-[0.2em]">Syncing Clinical Ledger...</div>;
 
   return (
     <div className="page-container page-transition">
-      {/* Header */}
-      <div className="header-section flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div className="space-y-2.5">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#FAFAFA] border border-[#F1F1F1] rounded-full text-[10px] font-bold uppercase tracking-widest text-[#777777]">
+      <div className="header-section flex items-end justify-between">
+        <div>
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#FAFAFA] border border-[#F1F1F1] rounded-full text-[10px] font-bold uppercase tracking-widest text-[#777777] mb-4">
             <Activity className="w-3.5 h-3.5" />
-            Vitals Overview
+            Vitals Monitoring Live
           </div>
           <h1 className="page-title">
             Biometric <span className="text-[#DDDDDD]">Dashboard.</span>
@@ -72,10 +81,9 @@ export const HomePage = () => {
         <div className="lg:col-span-8 space-y-8">
           
           {/* Summary Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <StatBox label="Systolic" value={todayAvg.avg_systolic} unit="mmHg" icon={TrendingUp} />
             <StatBox label="Diastolic" value={todayAvg.avg_diastolic} unit="mmHg" icon={BarChart3} />
-            <StatBox label="Pulse" value={todayAvg.avg_pulse} unit="BPM" icon={Heart} />
           </div>
 
           {/* Trend Chart */}
@@ -159,19 +167,19 @@ export const HomePage = () => {
                   <HistoryItem key={reading.id} reading={reading} />
                 ))
               ) : (
-                <div className="modern-card p-10 text-center border-dashed">
-                   <p className="text-[10px] font-black text-[#DDDDDD] uppercase tracking-[0.2em]">Initial Record Needed</p>
+                <div className="modern-card text-center py-12">
+                   <p className="text-[10px] font-black text-[#CCCCCC] uppercase tracking-widest">No readings found</p>
                 </div>
               )}
-              
-              <button className="w-full flex items-center justify-between p-4 rounded-2xl border border-[#F1F1F1] hover:bg-[#FAFAFA] transition-all group">
-                 <span className="text-[10px] font-black text-[#111111] uppercase tracking-[0.2em]">Explore All History</span>
-                 <ChevronRight className="w-4 h-4 text-[#CCCCCC] group-hover:text-[#111111] transition-colors" />
-              </button>
             </div>
+            
+            <button className="w-full mt-6 py-4 flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest text-[#777777] hover:text-[#111111] transition-colors border border-dashed border-[#EEEEEE] rounded-2xl">
+               Full History Archive <ChevronRight className="w-3 h-3" />
+            </button>
           </div>
         </div>
       </div>
     </div>
   );
 };
+ Riverside

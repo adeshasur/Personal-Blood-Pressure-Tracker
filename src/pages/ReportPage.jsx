@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { pressureService } from '../services/api.js';
 import { getBPStatus } from '../utils/health.js';
-import { Download, ShieldCheck, Printer } from 'lucide-react';
+import { ShieldCheck, Printer } from 'lucide-react';
 
 export const ReportPage = () => {
   const [readings, setReadings] = useState([]);
-  const [stats, setStats] = useState({ systolic: 0, diastolic: 0, pulse: 0, count: 0 });
+  const [stats, setStats] = useState({ systolic: 0, diastolic: 0, count: 0 });
   const [loading, setLoading] = useState(true);
-  const DEPLOY_VERSION = 'v1.3.0-PRINT';
+  const DEPLOY_VERSION = 'v1.4.0-FINAL';
 
   useEffect(() => {
     const fetchData = async () => {
@@ -19,15 +19,12 @@ export const ReportPage = () => {
         if (data.length > 0) {
           const sums = data.reduce((acc, r) => ({
             systolic: acc.systolic + (r.systolic || 0),
-            diastolic: acc.diastolic + (r.diastolic || 0),
-            pulse: acc.pulse + (r.pulse || 0),
-            pulseCount: acc.pulseCount + (r.pulse ? 1 : 0)
-          }), { systolic: 0, diastolic: 0, pulse: 0, pulseCount: 0 });
+            diastolic: acc.diastolic + (r.diastolic || 0)
+          }), { systolic: 0, diastolic: 0 });
           
           setStats({
             systolic: sums.systolic / data.length,
             diastolic: sums.diastolic / data.length,
-            pulse: sums.pulseCount > 0 ? sums.pulse / sums.pulseCount : null,
             count: data.length
           });
         }
@@ -64,9 +61,6 @@ export const ReportPage = () => {
           {reading.systolic}<span className="text-[#DDDDDD] font-light mx-0.5">/</span>{reading.diastolic}
         </span>
         <div className="flex items-center gap-1.5 mt-0.5">
-           <span className="text-[9px] font-bold text-[#999999] uppercase tracking-tight">
-             {reading.pulse ? `${reading.pulse} BPM` : 'No Pulse'}
-           </span>
            <span className={`text-[7px] font-black px-1.5 py-0.5 rounded-full border ${status.badge} scale-90 origin-left print:border-black print:text-black`}>
               {status.label.split(' ')[0]}
            </span>
@@ -80,7 +74,7 @@ export const ReportPage = () => {
   return (
     <div className="page-container page-transition">
       
-      {/* Header Section - Hidden during print except title */}
+      {/* Header Section */}
       <div className="header-section flex flex-col md:flex-row md:items-end justify-between gap-6 print:mb-8">
         <div className="space-y-2.5">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#FAFAFA] border border-[#F1F1F1] rounded-full text-[10px] font-bold uppercase tracking-widest text-[#777777] print:hidden">
@@ -106,8 +100,8 @@ export const ReportPage = () => {
         </button>
       </div>
 
-      {/* Stats Summary - Simplified for Print */}
-      <div className="grid grid-cols-3 gap-6 mb-8 hidden print:grid border-y border-[#EEEEEE] py-4">
+      {/* Stats Summary - 2 Columns for Print */}
+      <div className="grid grid-cols-2 gap-6 mb-8 hidden print:grid border-y border-[#EEEEEE] py-4">
          <div>
             <p className="text-[9px] font-black uppercase tracking-widest text-[#999999] mb-1">Avg Systolic</p>
             <p className="text-xl font-black">{Math.round(stats.systolic)} <span className="text-[10px] text-[#BBBBBB]">mmHg</span></p>
@@ -115,10 +109,6 @@ export const ReportPage = () => {
          <div>
             <p className="text-[9px] font-black uppercase tracking-widest text-[#999999] mb-1">Avg Diastolic</p>
             <p className="text-xl font-black">{Math.round(stats.diastolic)} <span className="text-[10px] text-[#BBBBBB]">mmHg</span></p>
-         </div>
-         <div>
-            <p className="text-[9px] font-black uppercase tracking-widest text-[#999999] mb-1">Avg Pulse</p>
-            <p className="text-xl font-black">{stats.pulse ? Math.round(stats.pulse) : '--'} <span className="text-[10px] text-[#BBBBBB]">BPM</span></p>
          </div>
       </div>
 
@@ -167,3 +157,4 @@ export const ReportPage = () => {
     </div>
   );
 };
+ Riverside
