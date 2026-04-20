@@ -50,8 +50,8 @@ export const HomePage = () => {
   if (loading) return <div className="page-container text-center py-24 text-[10px] font-black text-[#DDDDDD] uppercase tracking-[0.2em]">Syncing Clinical Ledger...</div>;
 
   return (
-    <div className="page-container page-transition">
-      <div className="header-section flex items-end justify-between">
+    <div className="page-container page-transition h-full flex flex-col">
+      <div className="header-section flex-shrink-0 flex items-end justify-between">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#FAFAFA] border border-[#F1F1F1] rounded-full text-[10px] font-bold uppercase tracking-widest text-[#777777] mb-4">
             <Activity className="w-3.5 h-3.5" />
@@ -76,19 +76,19 @@ export const HomePage = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
+      <div className="flex-1 min-h-0 grid grid-cols-1 md:grid-cols-12 gap-5 pb-2">
         {/* Main Column: Stats & Chart */}
-        <div className="md:col-span-8 space-y-5">
+        <div className="md:col-span-8 flex flex-col gap-5 min-h-0">
           
           {/* Summary Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="flex-shrink-0 grid grid-cols-1 md:grid-cols-2 gap-5">
             <StatBox label="Systolic" value={todayAvg.avg_systolic} unit="mmHg" icon={TrendingUp} />
             <StatBox label="Diastolic" value={todayAvg.avg_diastolic} unit="mmHg" icon={BarChart3} />
           </div>
 
           {/* Trend Chart */}
-          <div className="modern-card">
-            <div className="flex items-center justify-between mb-5">
+          <div className="modern-card flex-1 flex flex-col min-h-0 mb-0">
+            <div className="flex items-center justify-between mb-5 flex-shrink-0">
               <div>
                 <h3 className="text-[11px] font-black text-[#BBBBBB] uppercase tracking-[0.2em] mb-1">Health Trend</h3>
                 <p className="text-sm font-black text-[#111111]">Daily Average Metrics</p>
@@ -105,7 +105,7 @@ export const HomePage = () => {
               </div>
             </div>
             
-            <div className="h-[220px] w-full">
+            <div className="flex-1 w-full min-h-0">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={stats}>
                   <defs>
@@ -154,14 +154,14 @@ export const HomePage = () => {
         </div>
 
         {/* Sidebar: Recent Activity */}
-        <div className="md:col-span-4 space-y-5">
-          <div>
-            <div className="header-section mb-4">
+        <div className="md:col-span-4 flex flex-col min-h-0 mb-0">
+          <div className="modern-card flex-1 flex flex-col p-4 sm:p-5 border border-[#F1F1F1] shadow-none min-h-0">
+            <div className="header-section flex-shrink-0 mb-4">
               <h3 className="text-[11px] font-black text-[#BBBBBB] uppercase tracking-[0.2em] mb-1">Journal</h3>
               <p className="text-sm font-black text-[#111111]">Latest Records</p>
             </div>
             
-            <div className="space-y-4">
+            <div className="flex-1 overflow-y-auto min-h-0 space-y-3 pr-1 pb-2">
               {latestReadings.length > 0 ? (
                 latestReadings.map(reading => (
                   <HistoryItem key={reading.id} reading={reading} />
@@ -171,11 +171,12 @@ export const HomePage = () => {
                    <p className="text-[10px] font-black text-[#CCCCCC] uppercase tracking-widest">No readings found</p>
                 </div>
               )}
-            </div>
             
-            <button className="w-full mt-4 py-3 flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest text-[#777777] hover:text-[#111111] transition-colors border border-dashed border-[#EEEEEE] rounded-2xl">
-               Full History Archive <ChevronRight className="w-3 h-3" />
-            </button>
+            <div className="flex-shrink-0 mt-3 pt-3 border-t border-[#F1F1F1]">
+              <button className="w-full py-3 flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest text-[#777777] hover:text-[#111111] transition-colors border border-dashed border-[#EEEEEE] rounded-2xl bg-[#FAFAFA]">
+                 Full History Archive <ChevronRight className="w-3 h-3" />
+              </button>
+            </div>
           </div>
         </div>
       </div>

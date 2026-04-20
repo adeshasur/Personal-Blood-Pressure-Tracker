@@ -25,9 +25,9 @@ const NavLink = ({ to, children }) => {
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-white">
+      <div className="h-screen w-full bg-white flex flex-col overflow-hidden">
         {/* Minimal Navigation */}
-        <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#F1F1F1]">
+        <nav className="flex-shrink-0 sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#F1F1F1]">
           <div className="w-full px-8 md:px-12 py-4 flex items-center justify-between">
             
             {/* Logo */}
@@ -62,7 +62,7 @@ function App() {
         </nav>
 
         {/* Page Content */}
-        <main className="page-transition">
+        <main className="flex-1 relative overflow-y-auto page-transition">
           <Routes>
             <Route path="/"       element={<HomePage />}   />
             <Route path="/log"    element={<LogPage />}    />
