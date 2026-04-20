@@ -39,7 +39,7 @@ The Personal Blood Pressure Tracker is built with professional aesthetics, focus
 * **Data Visualization**: Recharts
 * **Icons**: Lucide React
 * **Backend Storage**: Firebase / Cloud Firestore
-* **Deployment Infrastructure**: Global CI/CD Integration (Netlify / Vercel / GitHub Actions)
+* **Deployment Infrastructure**: Global CI/CD Integration (Netlify / GitHub Actions)
 
 ## Installation and Setup
 
