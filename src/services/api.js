@@ -5,8 +5,7 @@ import {
   query, 
   orderBy, 
   limit, 
-  serverTimestamp,
-  writeBatch
+  serverTimestamp
 } from 'firebase/firestore';
 import { db } from './firebase.js';
 
@@ -39,9 +38,8 @@ export const pressureService = {
       
       if (snapshot.empty) {
         console.log("--- Initializing Cloud Persistence with Historical Data ---");
-        const batch = writeBatch(db);
         SEED_DATA.forEach((data) => {
-          const docRef = addDoc(collection(db, COLLECTION_NAME), {
+          addDoc(collection(db, COLLECTION_NAME), {
             ...data,
             created_at: serverTimestamp()
           });

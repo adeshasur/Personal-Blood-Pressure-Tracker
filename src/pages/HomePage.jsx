@@ -171,6 +171,7 @@ export const HomePage = () => {
                    <p className="text-[10px] font-black text-[#CCCCCC] uppercase tracking-widest">No readings found</p>
                 </div>
               )}
+            </div>
             
             <div className="flex-shrink-0 mt-3 pt-3 border-t border-[#F1F1F1]">
               <button className="w-full py-3 flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest text-[#777777] hover:text-[#111111] transition-colors border border-dashed border-[#EEEEEE] rounded-2xl bg-[#FAFAFA]">
