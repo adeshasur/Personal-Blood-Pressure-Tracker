@@ -50,7 +50,7 @@
   }
 
   .header-section {
-    @apply mb-12;
+    @apply mb-6;
   }
 
   .page-title {

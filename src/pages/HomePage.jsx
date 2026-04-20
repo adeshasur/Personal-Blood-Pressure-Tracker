@@ -76,9 +76,9 @@ export const HomePage = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Main Column: Stats & Chart */}
-        <div className="lg:col-span-8 space-y-8">
+        <div className="lg:col-span-8 space-y-5">
           
           {/* Summary Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -88,7 +88,7 @@ export const HomePage = () => {
 
           {/* Trend Chart */}
           <div className="modern-card">
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center justify-between mb-5">
               <div>
                 <h3 className="text-[11px] font-black text-[#BBBBBB] uppercase tracking-[0.2em] mb-1">Health Trend</h3>
                 <p className="text-sm font-black text-[#111111]">Daily Average Metrics</p>
@@ -105,7 +105,7 @@ export const HomePage = () => {
               </div>
             </div>
             
-            <div className="h-[280px] w-full">
+            <div className="h-[220px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={stats}>
                   <defs>
@@ -154,9 +154,9 @@ export const HomePage = () => {
         </div>
 
         {/* Sidebar: Recent Activity */}
-        <div className="lg:col-span-4 space-y-8">
+        <div className="lg:col-span-4 space-y-5">
           <div>
-            <div className="header-section mb-6">
+            <div className="header-section mb-4">
               <h3 className="text-[11px] font-black text-[#BBBBBB] uppercase tracking-[0.2em] mb-1">Journal</h3>
               <p className="text-sm font-black text-[#111111]">Latest Records</p>
             </div>
@@ -173,7 +173,7 @@ export const HomePage = () => {
               )}
             </div>
             
-            <button className="w-full mt-6 py-4 flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest text-[#777777] hover:text-[#111111] transition-colors border border-dashed border-[#EEEEEE] rounded-2xl">
+            <button className="w-full mt-4 py-3 flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest text-[#777777] hover:text-[#111111] transition-colors border border-dashed border-[#EEEEEE] rounded-2xl">
                Full History Archive <ChevronRight className="w-3 h-3" />
             </button>
           </div>
