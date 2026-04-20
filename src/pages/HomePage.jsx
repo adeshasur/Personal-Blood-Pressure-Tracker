@@ -29,7 +29,7 @@ export const HomePage = () => {
       try {
         const [statsRes, latestRes] = await Promise.all([
           pressureService.getDashboardStats(),
-          pressureService.getReadings(5)
+          pressureService.getReadings(4)
         ]);
         
         setStats(statsRes.data);
@@ -76,9 +76,9 @@ export const HomePage = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
         {/* Main Column: Stats & Chart */}
-        <div className="lg:col-span-8 space-y-5">
+        <div className="md:col-span-8 space-y-5">
           
           {/* Summary Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -154,7 +154,7 @@ export const HomePage = () => {
         </div>
 
         {/* Sidebar: Recent Activity */}
-        <div className="lg:col-span-4 space-y-5">
+        <div className="md:col-span-4 space-y-5">
           <div>
             <div className="header-section mb-4">
               <h3 className="text-[11px] font-black text-[#BBBBBB] uppercase tracking-[0.2em] mb-1">Journal</h3>

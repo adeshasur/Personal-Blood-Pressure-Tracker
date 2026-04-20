@@ -46,7 +46,7 @@
 
   /* Standardized Page Layout */
   .page-container {
-    @apply max-w-[1400px] w-full mx-auto px-8 py-6;
+    @apply w-full px-8 md:px-12 py-6;
   }
 
   .header-section {
