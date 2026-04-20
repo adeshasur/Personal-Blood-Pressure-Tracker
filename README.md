@@ -2,6 +2,8 @@
 
 A modern, clinical-grade cardiovascular performance dashboard designed for individual use. This application allows users to monitor real-time blood pressure data and clinical trends across a secure cloud ledger.
 
+**Live Demo**: [https://personal-blood-pressure-tracker.netlify.app/](https://personal-blood-pressure-tracker.netlify.app/)
+
 ## Overview
 
 The Personal Blood Pressure Tracker is built with professional aesthetics, focusing on a minimalist, high-contrast, black-and-white theme. It provides high-fidelity biometric metric visualization (systolic/diastolic) while maintaining a clean and professional reporting layout.
