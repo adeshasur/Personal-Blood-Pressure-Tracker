@@ -122,6 +122,18 @@ export const LogForm = ({ onReadingsUpdate }) => {
           ) : 'Submit Entry'}
         </button>
       </form>
+
+      {/* Floating Success Notification */}
+      {lastSaved && (
+        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] animate-in fade-in slide-in-from-bottom-5 duration-300">
+          <div className="bg-[#111111] text-white px-8 py-4 rounded-full flex items-center gap-3 shadow-2xl border border-white/10">
+            <div className="bg-emerald-500/20 p-1 rounded-full">
+              <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+            </div>
+            <span className="text-sm font-bold tracking-tight">Record stored successfully</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
