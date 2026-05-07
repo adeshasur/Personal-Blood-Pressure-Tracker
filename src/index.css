@@ -22,7 +22,7 @@
 @layer components {
   /* Refined Rounded Cards */
   .modern-card {
-    @apply bg-white border border-[#F1F1F1] rounded-[20px] p-5 transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.03)];
+    @apply bg-white border border-[#F1F1F1] rounded-[32px] p-6 transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.03)];
   }
 
   /* Elegant High Contrast Buttons */
@@ -39,7 +39,7 @@
 
   /* Refined Input Fields */
   .input-field {
-    @apply w-full px-5 py-3.5 bg-[#FAFAFA] border border-[#F1F1F1] rounded-xl
+    @apply w-full px-5 py-3.5 bg-[#FAFAFA] border border-[#F1F1F1] rounded-2xl
            focus:border-[#111111] focus:bg-white focus:outline-none focus:ring-0
            text-[#111111] placeholder-[#AAAAAA] transition-all duration-300 text-sm;
   }

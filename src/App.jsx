@@ -32,7 +32,7 @@ function App() {
             
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2 sm:gap-2.5 group">
-              <div className="p-1.5 sm:p-2 bg-[#111111] text-white rounded-xl group-hover:scale-105 transition-transform duration-300">
+              <div className="p-1.5 sm:p-2 bg-[#111111] text-white rounded-2xl group-hover:scale-105 transition-transform duration-300">
                 <Heart className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
               </div>
               <span className="hidden sm:block font-bold text-lg sm:text-xl tracking-tight text-[#111111]">BP Tracker</span>
