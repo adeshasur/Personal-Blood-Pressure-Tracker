@@ -62,7 +62,7 @@ function App() {
         </nav>
 
         {/* Page Content */}
-        <main className="flex-1 relative overflow-y-auto page-transition">
+        <main className="flex-1 relative overflow-y-auto">
           <Routes>
             <Route path="/"       element={<HomePage />}   />
             <Route path="/log"    element={<LogPage />}    />

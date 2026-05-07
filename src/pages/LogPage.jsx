@@ -33,7 +33,7 @@ export const LogPage = () => {
     };
 
     return (
-      <div className="page-container page-transition">
+      <div className="page-container page-transition h-full flex flex-col">
         
         {/* Header Section */}
         <div className="header-section flex flex-col md:flex-row md:items-end justify-between gap-6">

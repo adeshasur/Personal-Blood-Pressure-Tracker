@@ -72,7 +72,7 @@ export const ReportPage = () => {
   if (loading) return <div className="page-container text-center py-24 text-[10px] font-black text-[#DDDDDD] uppercase tracking-[0.2em]">Syncing Clinical Ledger...</div>;
 
   return (
-    <div className="page-container page-transition">
+    <div className="page-container page-transition h-full flex flex-col">
       
       {/* Header Section */}
       <div className="header-section flex flex-col md:flex-row md:items-end justify-between gap-6 print:mb-8">
