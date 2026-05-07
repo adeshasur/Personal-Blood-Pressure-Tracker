@@ -125,8 +125,8 @@ export const LogForm = ({ onReadingsUpdate }) => {
 
       {/* Floating Success Notification */}
       {lastSaved && (
-        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] animate-in fade-in slide-in-from-bottom-5 duration-300">
-          <div className="bg-[#111111] text-white px-8 py-4 rounded-full flex items-center gap-3 shadow-2xl border border-white/10">
+        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[9999] transition-all duration-500 transform">
+          <div className="bg-[#111111] text-white px-8 py-4 rounded-full flex items-center gap-3 shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-white/10">
             <div className="bg-emerald-500/20 p-1 rounded-full">
               <CheckCircle2 className="w-5 h-5 text-emerald-500" />
             </div>
