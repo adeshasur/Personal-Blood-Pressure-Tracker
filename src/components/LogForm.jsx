@@ -16,14 +16,15 @@ export const LogForm = ({ onReadingsUpdate }) => {
     e.preventDefault();
     setLoading(true);
     try {
+      setLastSaved(true);
+      setTimeout(() => setLastSaved(false), 3000);
+      
       await pressureService.createReading({
         ...formData,
         systolic: parseInt(formData.systolic),
         diastolic: parseInt(formData.diastolic)
       });
       onReadingsUpdate();
-      setLastSaved(true);
-      setTimeout(() => setLastSaved(false), 3000);
       setFormData({ ...formData, systolic: '', diastolic: '' });
     } catch (err) {
       console.error('Save failed:', err);
