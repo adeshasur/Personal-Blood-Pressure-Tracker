@@ -1,69 +1,35 @@
-import { 
-  collection, 
-  addDoc, 
-  getDocs, 
-  query, 
-  orderBy, 
-  limit, 
-  serverTimestamp
-} from 'firebase/firestore';
-import { db } from './firebase.js';
+const STORAGE_KEY = "bp_tracker_readings";
 
-const COLLECTION_NAME = "bp_readings";
+// Helper to get data from localStorage
+const getLocalData = () => {
+  const data = localStorage.getItem(STORAGE_KEY);
+  return data ? JSON.parse(data) : [];
+};
 
-// --- Default Historical Data (April 13th to 18th) ---
-const SEED_DATA = [
-  { date: '2026-04-13', systolic: 116, diastolic: 90, category: 'Morning' },
-  { date: '2026-04-13', systolic: 118, diastolic: 70, category: 'Evening' },
-  { date: '2026-04-13', systolic: 119, diastolic: 75, category: 'Night' },
-  { date: '2026-04-14', systolic: 120, diastolic: 78, category: 'Morning' },
-  { date: '2026-04-14', systolic: 114, diastolic: 66, category: 'Evening' },
-  { date: '2026-04-14', systolic: 121, diastolic: 79, category: 'Night' },
-  { date: '2026-04-15', systolic: 120, diastolic: 82, category: 'Morning' },
-  { date: '2026-04-15', systolic: 119, diastolic: 72, category: 'Evening' },
-  { date: '2026-04-15', systolic: 113, diastolic: 54, category: 'Night' },
-  { date: '2026-04-16', systolic: 131, diastolic: 73, category: 'Morning' },
-  { date: '2026-04-16', systolic: 129, diastolic: 78, category: 'Evening' },
-  { date: '2026-04-16', systolic: 135, diastolic: 112, category: 'Night' },
-  { date: '2026-04-17', systolic: 131, diastolic: 91, category: 'Morning' },
-  { date: '2026-04-18', systolic: 123, diastolic: 75, category: 'Evening' },
-];
+// Helper to save data to localStorage
+const saveLocalData = (data) => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+};
 
 export const pressureService = {
-  // Check if seeding is needed
-  _checkAndSeed: async () => {
-    try {
-      const q = query(collection(db, COLLECTION_NAME), limit(1));
-      const snapshot = await getDocs(q);
-      
-      if (snapshot.empty) {
-        console.log("--- Initializing Cloud Persistence with Historical Data ---");
-        SEED_DATA.forEach((data) => {
-          addDoc(collection(db, COLLECTION_NAME), {
-            ...data,
-            created_at: serverTimestamp()
-          });
-        });
-        // Note: Batched writes for many records would use batch.set but addDoc is async here.
-        // For simplicity, we just trigger them or use a proper batch.
-      }
-    } catch (err) {
-      console.error("Seeding failed:", err);
-    }
-  },
-
   // Create new reading
   createReading: async (data) => {
     try {
-      const docRef = await addDoc(collection(db, COLLECTION_NAME), {
+      const readings = getLocalData();
+      const newReading = {
+        id: Date.now().toString(),
         ...data,
         systolic: parseInt(data.systolic),
         diastolic: parseInt(data.diastolic),
-        created_at: serverTimestamp()
-      });
-      return { data: { id: docRef.id, ...data } };
+        created_at: new Date().toISOString()
+      };
+      
+      readings.push(newReading);
+      saveLocalData(readings);
+      
+      return { data: newReading };
     } catch (err) {
-      console.error("Firestore Error (Create):", err);
+      console.error("Storage Error (Create):", err);
       throw err;
     }
   },
@@ -71,22 +37,13 @@ export const pressureService = {
   // Get all readings (flat list)
   getReadings: async (maxCount = 50) => {
     try {
-      await pressureService._checkAndSeed();
-      const q = query(
-        collection(db, COLLECTION_NAME), 
-        orderBy("date", "desc"),
-        limit(maxCount)
-      );
-      const snapshot = await getDocs(q);
-      const readings = snapshot.docs.map(d => ({ 
-        id: d.id, 
-        ...d.data(),
-        created_at: d.data().created_at?.toDate().toISOString() || new Date().toISOString()
-      }));
+      const readings = getLocalData()
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
+        .slice(0, maxCount);
 
       return { data: readings };
     } catch (err) {
-      console.error("Firestore Error (Read):", err);
+      console.error("Storage Error (Read):", err);
       return { data: [] };
     }
   },
@@ -94,10 +51,9 @@ export const pressureService = {
   // Get Latest Readings (Dashboard)
   getLatestReadings: async (maxCount = 5) => {
     try {
-      await pressureService._checkAndSeed();
-      const q = query(collection(db, COLLECTION_NAME), orderBy("date", "desc"), limit(maxCount));
-      const snapshot = await getDocs(q);
-      const all = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      const all = getLocalData()
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
+        .slice(0, maxCount);
 
       // Group by date
       const groupedMap = all.reduce((acc, r) => {
@@ -119,7 +75,7 @@ export const pressureService = {
 
       return { data: result };
     } catch (err) {
-      console.error("Firestore Error (History):", err);
+      console.error("Storage Error (History):", err);
       return { data: [] };
     }
   },
@@ -127,9 +83,7 @@ export const pressureService = {
   // Dashboard Stats (Daily Averages)
   getDashboardStats: async () => {
     try {
-      await pressureService._checkAndSeed();
-      const snapshot = await getDocs(collection(db, COLLECTION_NAME));
-      const readings = snapshot.docs.map(d => d.data());
+      const readings = getLocalData();
       
       const groupedMap = readings.reduce((acc, r) => {
         if (!acc[r.date]) acc[r.date] = { systolic: 0, diastolic: 0, count: 0 };
@@ -149,8 +103,9 @@ export const pressureService = {
 
       return { data: stats };
     } catch (err) {
-      console.error("Firestore Error (Stats):", err);
+      console.error("Storage Error (Stats):", err);
       return { data: [] };
     }
   }
 };
+
